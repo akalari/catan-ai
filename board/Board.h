@@ -3,8 +3,10 @@
 
 enum Resources {BRICK, LUMBER, WOOL, GRAIN, ORE};
 
-const int TILE_POSSIBILITIES[] = {5, 2, 6, 3, 8, 10, 9, 12, 11, 4, 8, 10, 9, 4, 5, 6, 3, 11};
-const int TILES_SPIRAL[] = {0, 1, 2, 6, 11, 15, 18, 17, 16, 12, 7, 3, 4, 5, 10, 14, 13, 8, 9};
+const int TILE_POSSIBILITIES[] =
+  {5, 2, 6, 3, 8, 10, 9, 12, 11, 4, 8, 10, 9, 4, 5, 6, 3, 11};
+const int TILES_SPIRAL[] =
+  {0, 1, 2, 6, 11, 15, 18, 17, 16, 12, 7, 3, 4, 5, 10, 14, 13, 8, 9};
 
 const int TILE_ADJACENCIES[19][6] =
   {{-1, -1, 1, 4, 3, -1},    //0
@@ -31,23 +33,31 @@ void initBoard();
 
 struct Corner;
 struct Edge;
+struct Tile;
+struct Port;
 
 struct Tile {
-  Corner *adjSettlements[6];
-  Edge *adjEdges[6];
-  Tile *adjTiles[6];
+  Corner* adjSettlements[6];
+  Edge* adjEdges[6];
+  Tile* adjTiles[6];
   int num;
   int resource;
 };
 
 struct Edge {
-  Corner *adjCorners[2];
+  Corner* adjCorners[2];
 };
 
 struct Corner {
-  Tile *adjTiles; // Variable length: {1, 2, 3}
-  Edge *adjEdges; // Variable length: {2, 3}
+  Tile* adjTiles; // Variable length: {1, 2, 3}
+  Edge* adjEdges; // Variable length: {2, 3}
+  Port* adjPort;  // Variable length: {0, 1}
   Corner() {}
+};
+
+struct Port {
+  Corner* adjCorners[2];
+  int resource;
 };
 
 #endif

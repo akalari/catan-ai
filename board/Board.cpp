@@ -16,7 +16,9 @@ Tile tiles[NUM_TILES];
 Corner corners[NUM_CORNERS];
 Edge edges[NUM_EDGES];
 
-
+/**
+ * Assigns adjacent tiles to each tile on the board
+ */
 void initBoard() {
 
   int nextEdge = 0;
@@ -34,23 +36,30 @@ void initBoard() {
   }
 }
 
-void printTiles(char tc[19], int ti[19]) {
-    for(int i = 0; i < 19; i++) {
+/**
+ * Prints out the tiles
+ */
+void printTiles(char tc[NUM_TILES], int ti[NUM_TILES]) {
+
+    for(int i = 0; i < NUM_TILES; i++) {
       if(i == 0 || i == 16) cout << "\n     ";
       else if(i == 3 || i == 12) cout << "\n   ";
       else if(i == 7)cout << "\n";
-
       if(tc[i])printf("[%c%02d]", tc[i], ti[i]);
       else printf("[ %1d ]", i);
     }
+
     cout << "\n\n";
 }
 
+/**
+ * Allows the user to input the values for the board
+ */
 void inputBoard() {
-  char tc[19] = {0};
-  int ti[19] {0};
+  char tc[NUM_TILES] = {0};
+  int ti[NUM_TILES] {0};
 
-  for(int i = 0; i < 19; i++) {
+  for(int i = 0; i < NUM_TILES; i++) {
     printTiles(tc, ti);
     cout << "Please specify tile " << i << ": [blwgod][1-12] -> ";
     cin >> tc[i] >> ti[i];
@@ -58,10 +67,10 @@ void inputBoard() {
 }
 
 void inputBoard(const int possibilitiesSpiral[18]) {
-  char tc[19] = {0};
-  int ti[19] {0};
+  char tc[NUM_TILES] = {0};
+  int ti[NUM_TILES] {0};
 
-  for(int i = 0; i < 19; i++) {
+  for(int i = 0; i < NUM_TILES; i++) {
     printTiles(tc, ti);
     cout << "Please specify tile " << i << ": [blwgod]-> ";
     cin >> tc[i];
@@ -69,7 +78,7 @@ void inputBoard(const int possibilitiesSpiral[18]) {
   }
 
   int c = 0;
-  for(int i = 0; i < 19; i++){
+  for(int i = 0; i < NUM_TILES; i++){
       if(tc[TILES_SPIRAL[i]] == 'd')continue;
       ti[TILES_SPIRAL[i]] = possibilitiesSpiral[c++];
   }
