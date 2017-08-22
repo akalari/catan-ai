@@ -2,7 +2,6 @@
 #include <iostream>
 #include <stdio.h>
 
-
 #include "Board.h"
 
 using namespace std;
@@ -53,7 +52,7 @@ void printTiles(char tc[NUM_TILES], int ti[NUM_TILES]) {
 }
 
 /**
- * Allows the user to input the values for the board
+ * Allows the user to input the values for the board resources only
  */
 void inputBoard() {
   char tc[NUM_TILES] = {0};
@@ -66,6 +65,9 @@ void inputBoard() {
   }
 }
 
+/**
+ * Allows the user to input the values for the board resources and probabilities
+ */
 void inputBoard(const int possibilitiesSpiral[18]) {
   char tc[NUM_TILES] = {0};
   int ti[NUM_TILES] {0};

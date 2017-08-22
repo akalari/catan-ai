@@ -1,7 +1,7 @@
+#include <"../elements/Elements.h">
+
 #ifndef BOARD_H
 #define BOARD_H
-
-enum Resources {BRICK, LUMBER, WOOL, GRAIN, ORE};
 
 const int TILE_POSSIBILITIES[] =
   {5, 2, 6, 3, 8, 10, 9, 12, 11, 4, 8, 10, 9, 4, 5, 6, 3, 11};
@@ -40,18 +40,20 @@ struct Tile {
   Corner* adjSettlements[6];
   Edge* adjEdges[6];
   Tile* adjTiles[6];
-  int num;
+  int num;[<0;33;37M]
   int resource;
 };
 
 struct Edge {
   Corner* adjCorners[2];
+  int road = -1;
 };
 
 struct Corner {
   Tile* adjTiles; // Variable length: {1, 2, 3}
   Edge* adjEdges; // Variable length: {2, 3}
   Port* adjPort;  // Variable length: {0, 1}
+  int settlement = -1;
   Corner() {}
 };
 
