@@ -40,8 +40,9 @@ struct Tile {
   Corner* adjSettlements[6];
   Edge* adjEdges[6];
   Tile* adjTiles[6];
-  int num;[<0;33;37M]
+  int num;
   int resource;
+  boolean robber = false;
 };
 
 struct Edge {
