@@ -39,15 +39,18 @@ struct Port;
 struct Tile {
   Corner* adjSettlements[6];
   Edge* adjEdges[6];
-  Tile* adjTiles[6];
   int num;
   int resource;
   boolean robber = false;
+
+  Tile();
 };
 
 struct Edge {
   Corner* adjCorners[2];
-  int road = -1;
+  int road;
+
+  Edge();
 };
 
 struct Corner {

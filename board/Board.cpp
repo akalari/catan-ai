@@ -10,28 +10,56 @@ const int NUM_TILES = 19;
 const int NUM_CORNERS = 54;
 const int NUM_EDGES = 72;
 const int CORNERS_PER_TILE = 6;
+const int EDGES_PER_TILE = 6;
 
 Tile tiles[NUM_TILES];
 Corner corners[NUM_CORNERS];
 Edge edges[NUM_EDGES];
 
+Tile:Tile() {
+    adjEdges = {NULL, NULL, NULL, NULL, NULL, NULL};
+    adjSettlements = {NULL, NULL, NULL, NULL, NULL, NULL};
+}
+
+Edge:Edge() {
+    adjCorners = {NULL, NULL};
+    road = -1;
+}
+
 /**
- * Assigns adjacent tiles to each tile on the board
+ * Assigns relations between tiles, edges, and corners
+ * Populates pointer arrays in each class
  */
 void initBoard() {
-
-  int nextEdge = 0;
+    int nextEdgeIndex = 0;
 
   // Loop through each tile on the board
   for(int t = 0; t < NUM_TILES; t++) {
-    Tile tile = tiles[t];
-    // Loop through the corners of each tile
-    for(int e = 0; e < CORNERS_PER_TILE; e++) {
-      int adj = TILE_ADJACENCIES[t][e];
-      // Assign the adjacent tile
-      if(adj < 0) tile.adjTiles[e] = NULL;
-      else tile.adjTiles[e] = &tiles[adj];
+    Tile tile = tiles[t] = Tile();
+
+    //iterate through all of the edges of the tile, to make sure they are assigned
+    for(int e = 0; e < EDGES_PER_TILE; e++) {
+        int adjTile = TILE_ADJACENCIES[t][e];
+        //if this is an edge not shared with any other tile, add to the list
+        if(adjTile == -1){
+            edges[nextEdgeIndex] = Edge();
+            tile.adjEdges[e] = &edges[nextEdgeIndex++];
+        //if this edge is shared but still unassigned, add to the list
+        } else if(tiles[adjTile].adjEdges[(e-3)%6] == NULL) {
+            edges[nextEdgeIndex] = Edge();
+            tile.adjEdges[e] = &edges[nextEdgeIndex++];
+        //if this edge is shared and already assigned, copy the pointer
+        } else
+            tile.adjEdges[e] = tiles[adjTiles].adjEdges[(e-3)%6];
     }
+
+    // // Loop through the corners of each tile
+    // for(int e = 0; e < CORNERS_PER_TILE; e++) {
+    //   int adj = TILE_ADJACENCIES[t][e];
+    //   // Assign the adjacent tile
+    //   if(adj < 0) tile.adjTiles[e] = NULL;
+    //   else tile.adjTiles[e] = &tiles[adj];
+    // }
   }
 }
 
