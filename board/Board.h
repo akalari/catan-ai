@@ -29,8 +29,6 @@ const int TILE_ADJACENCIES[19][6] =
   {13, 14, 18, -1, -1, 16},  //17
   {14, 15, -1, -1, -1, 17}}; //18
 
-void initBoard();
-
 struct Corner;
 struct Edge;
 struct Tile;
@@ -66,5 +64,10 @@ struct Port {
   Corner* adjCorners[2];
   int resource;
 };
+
+void initBoard();
+void initTiles();
+void initEdges();
+void initCorners();
 
 #endif

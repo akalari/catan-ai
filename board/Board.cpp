@@ -35,15 +35,25 @@ Corner::Corner():
  * Populates pointer arrays in each class
  */
 void initBoard() {
-    int nextEdge = 0;
-    int nextCorner = 0;
+    initTiles();
+    initEdges();
+    initCorners();
+}
 
-    // Initialize tiles
+/**
+ * Initialize board tiles
+ */
+void initTiles() {
     for(int t = 0; t < NUM_TILES; t++) {
         tiles[t] = Tile();
     }
+}
 
-    // Initialize edges
+/**
+ * Initialize board edges
+ */
+void initEdges() {
+    int nextEdge = 0;
     // Loop through each tile on the board
     for(int t = 0; t < NUM_TILES; t++) {
         Tile &tile = tiles[t];
@@ -66,7 +76,13 @@ void initBoard() {
             }
         }
     }
+}
 
+/**
+ * Set up board corners
+ */
+void initCorners() {
+    int nextCorner = 0;
     // Loop through all the tiles
     for (int t = 0; t < NUM_TILES; t++) {
         Tile &tile = tiles[t];
