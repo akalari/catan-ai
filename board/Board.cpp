@@ -6,12 +6,6 @@
 
 using namespace std;
 
-const int NUM_TILES = 19;
-const int NUM_CORNERS = 54;
-const int NUM_EDGES = 72;
-const int CORNERS_PER_TILE = 6;
-const int EDGES_PER_TILE = 6;
-
 Tile tiles[NUM_TILES];
 Corner corners[NUM_CORNERS];
 Edge edges[NUM_EDGES];

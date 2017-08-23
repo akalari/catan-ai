@@ -3,6 +3,12 @@
 #ifndef BOARD_H
 #define BOARD_H
 
+const int NUM_TILES = 19;
+const int NUM_CORNERS = 54;
+const int NUM_EDGES = 72;
+const int CORNERS_PER_TILE = 6;
+const int EDGES_PER_TILE = 6;
+
 const int TILE_POSSIBILITIES[] =
   {5, 2, 6, 3, 8, 10, 9, 12, 11, 4, 8, 10, 9, 4, 5, 6, 3, 11};
 const int TILES_SPIRAL[] =
