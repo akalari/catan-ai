@@ -1,3 +1,5 @@
+#include <vector>
+
 #ifndef BOARD_H
 #define BOARD_H
 
@@ -35,7 +37,7 @@ struct Tile;
 struct Port;
 
 struct Tile {
-  Corner* adjSettlements[6];
+  Corner* adjCorners[6];
   Edge* adjEdges[6];
   int num;
   int resource;
@@ -45,18 +47,19 @@ struct Tile {
 };
 
 struct Edge {
-  Corner* adjCorners[2];
+  std::vector<Corner*> adjCorners;
   int road;
 
   Edge();
 };
 
 struct Corner {
-  Tile* adjTiles; // Variable length: {1, 2, 3}
-  Edge* adjEdges; // Variable length: {2, 3}
-  Port* adjPort;  // Variable length: {0, 1}
-  int settlement = -1;
-  Corner() {}
+  std::vector<Tile*> adjTiles; // Variable length: {1, 2, 3}
+  std::vector<Edge*> adjEdges; // Variable length: {2, 3}
+  Port* adjPort; // Can be null
+  int settlement;
+
+  Corner();
 };
 
 struct Port {
