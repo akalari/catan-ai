@@ -16,15 +16,16 @@ Tile tiles[NUM_TILES];
 Corner corners[NUM_CORNERS];
 Edge edges[NUM_EDGES];
 
-Tile:Tile() {
-    adjEdges = {NULL, NULL, NULL, NULL, NULL, NULL};
-    adjSettlements = {NULL, NULL, NULL, NULL, NULL, NULL};
-}
+Tile::Tile():
+    adjSettlements {0, 0, 0, 0, 0, 0},
+    adjEdges {0, 0, 0, 0, 0, 0},
+    robber(false), num(-1), resource(-1)
+{}
 
-Edge:Edge() {
-    adjCorners = {NULL, NULL};
-    road = -1;
-}
+Edge::Edge():
+    adjCorners {0, 0},
+    road(-1)
+{}
 
 /**
  * Assigns relations between tiles, edges, and corners
@@ -45,13 +46,15 @@ void initBoard() {
             edges[nextEdgeIndex] = Edge();
             tile.adjEdges[e] = &edges[nextEdgeIndex++];
         //if this edge is shared but still unassigned, add to the list
-        } else if(tiles[adjTile].adjEdges[(e-3)%6] == NULL) {
+    } else if(tiles[adjTile].adjEdges[(e-3)%6] == 0) {
             edges[nextEdgeIndex] = Edge();
             tile.adjEdges[e] = &edges[nextEdgeIndex++];
         //if this edge is shared and already assigned, copy the pointer
         } else
-            tile.adjEdges[e] = tiles[adjTiles].adjEdges[(e-3)%6];
+            tile.adjEdges[e] = tiles[adjTile].adjEdges[(e-3)%6];
     }
+
+    for(double c = 0.5; c < 6; c+= 1);
 
     // // Loop through the corners of each tile
     // for(int e = 0; e < CORNERS_PER_TILE; e++) {

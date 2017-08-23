@@ -1,5 +1,3 @@
-#include <"../elements/Elements.h">
-
 #ifndef BOARD_H
 #define BOARD_H
 
@@ -41,7 +39,7 @@ struct Tile {
   Edge* adjEdges[6];
   int num;
   int resource;
-  boolean robber = false;
+  bool robber;
 
   Tile();
 };
