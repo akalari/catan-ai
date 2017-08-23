@@ -34,36 +34,35 @@ Edge::Edge():
 void initBoard() {
     int nextEdgeIndex = 0;
 
-  // Loop through each tile on the board
-  for(int t = 0; t < NUM_TILES; t++) {
-    Tile tile = tiles[t] = Tile();
-
-    //iterate through all of the edges of the tile, to make sure they are assigned
-    for(int e = 0; e < EDGES_PER_TILE; e++) {
-        int adjTile = TILE_ADJACENCIES[t][e];
-        //if this is an edge not shared with any other tile, add to the list
-        if(adjTile == -1){
-            edges[nextEdgeIndex] = Edge();
-            tile.adjEdges[e] = &edges[nextEdgeIndex++];
-        //if this edge is shared but still unassigned, add to the list
-    } else if(tiles[adjTile].adjEdges[(e-3)%6] == 0) {
-            edges[nextEdgeIndex] = Edge();
-            tile.adjEdges[e] = &edges[nextEdgeIndex++];
-        //if this edge is shared and already assigned, copy the pointer
-        } else
-            tile.adjEdges[e] = tiles[adjTile].adjEdges[(e-3)%6];
+    // Initialize tiles
+    for(int t = 0; t < NUM_TILES; t++) {
+        tiles[t] = Tile();
     }
 
-    for(double c = 0.5; c < 6; c+= 1);
+    // Initialize edges
+    // Loop through each tile on the board
+    for(int t = 0; t < NUM_TILES; t++) {
+        Tile &tile = tiles[t];
 
-    // // Loop through the corners of each tile
-    // for(int e = 0; e < CORNERS_PER_TILE; e++) {
-    //   int adj = TILE_ADJACENCIES[t][e];
-    //   // Assign the adjacent tile
-    //   if(adj < 0) tile.adjTiles[e] = NULL;
-    //   else tile.adjTiles[e] = &tiles[adj];
-    // }
-  }
+        // Loop through all of the edges of the tile
+        for(int e = 0; e < EDGES_PER_TILE; e++) {
+            int a = TILE_ADJACENCIES[t][e]; // Index of adjacent tile
+
+            // If this is an unshared edge, create a new instance
+            if(a == -1){
+                edges[nextEdgeIndex] = Edge();
+                tile.adjEdges[e] = &edges[nextEdgeIndex++];
+            } // If this is a null shared edge, create a new instance
+            else if(tile.adjEdges[e] == 0){
+                edges[nextEdgeIndex] = Edge();
+                tile.adjEdges[e] = &edges[nextEdgeIndex];
+                // Assign this object to the adjacent tile
+                tiles[a].adjEdges[(e+3)%6] = &edges[nextEdgeIndex];
+                nextEdgeIndex++;
+            }
+        }
+    }
+
 }
 
 /**
@@ -122,6 +121,6 @@ void inputBoard(const int possibilitiesSpiral[18]) {
 }
 
 int main(){
-  inputBoard(TILE_POSSIBILITIES);
-  return 0;
+    initBoard();
+    return 0;
 }
