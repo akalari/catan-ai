@@ -1,5 +1,5 @@
 CXXFLAGS = -std=c++11 -g
 CC = g++
 
-board: board/Board.cpp
-	$(CC) $(CXXFLAGS) board/Board.cpp -o bin/Board
+board: board/Board.cpp board/SetupBoard.cpp
+	$(CC) $(CXXFLAGS) board/Board.cpp board/SetupBoard.cpp -o bin/Board

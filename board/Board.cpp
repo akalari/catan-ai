@@ -117,69 +117,6 @@ void initCorners() {
                 corner.adjEdges.push_back(thirdEdge);
                 thirdEdge->adjCorners.push_back(&corner);
             }
-
         }
-
     }
-
-}
-
-/**
- * Prints out the tiles
- */
-void printTiles(char tc[NUM_TILES], int ti[NUM_TILES]) {
-
-    for(int i = 0; i < NUM_TILES; i++) {
-      if(i == 0 || i == 16) cout << "\n     ";
-      else if(i == 3 || i == 12) cout << "\n   ";
-      else if(i == 7)cout << "\n";
-      if(tc[i])printf("[%c%02d]", tc[i], ti[i]);
-      else printf("[ %1d ]", i);
-    }
-
-    cout << "\n\n";
-}
-
-/**
- * Allows the user to input the values for the board resources only
- */
-void inputBoard() {
-  char tc[NUM_TILES] = {0};
-  int ti[NUM_TILES] {0};
-
-  for(int i = 0; i < NUM_TILES; i++) {
-    printTiles(tc, ti);
-    cout << "Please specify tile " << i << ": [blwgod][1-12] -> ";
-    cin >> tc[i] >> ti[i];
-  }
-}
-
-/**
- * Allows the user to input the values for the board resources and probabilities
- */
-void inputBoard(const int possibilitiesSpiral[18]) {
-  char tc[NUM_TILES] = {0};
-  int ti[NUM_TILES] {0};
-
-  for(int i = 0; i < NUM_TILES; i++) {
-    printTiles(tc, ti);
-    cout << "Please specify tile " << i << ": [blwgod]-> ";
-    cin >> tc[i];
-    cout << endl;
-  }
-
-  int c = 0;
-  for(int i = 0; i < NUM_TILES; i++){
-      if(tc[TILES_SPIRAL[i]] == 'd')continue;
-      ti[TILES_SPIRAL[i]] = possibilitiesSpiral[c++];
-  }
-
-  cout << "Game board with assigned possibilities: " << endl;
-  printTiles(tc, ti);
-
-}
-
-int main(){
-    initBoard();
-    return 0;
 }
