@@ -4,6 +4,7 @@
 #include "Board.h"
 
 extern Tile tiles[NUM_TILES];
+extern Corner corners[NUM_CORNERS];
 
 Corner* getOtherCorner(Edge* e, Corner* c);
 bool isTwoAway(Corner* settlement);
@@ -49,11 +50,22 @@ std::vector<Corner*> getSettlements(int number) {
 	return matches;
 }
 
+/**
+ * Returns a list of all of the ports owned by a player
+ */
+std::vector<Port*> portsOwned(int player) {
+	std::vector<Port*> ports;
+	for(Corner c:corners) {
+		if(c->settlement == player &&
+				c->adjPort != 0)
+			ports.push_back(c->adjPort);
+	}
+	return ports;
+}
 
 /**
  * Checks if a new settlement is adjacent to a road
  * occupied by the player
- */
 boolean adjOwnRoad(Corner* settlement, int player) {
 	for (Edge* e : settlement->adjEdges) {
 		if(e->road != -1 && e-> road == player) return true;
