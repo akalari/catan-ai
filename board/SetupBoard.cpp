@@ -16,7 +16,7 @@ int getElement(char tc);
 
 int main() {
     initBoard();
-    inputBoard();
+    inputBoard(TILE_POSSIBILITIES);
     return 0;
 }
 
@@ -58,6 +58,8 @@ void inputBoard() {
     cout << "Please specify tile " << i << ": [blwgod][1-12] -> ";
     cin >> tc[i] >> ti[i];
   }
+
+  loadBoard(tc, ti);
 }
 
 /**
@@ -82,6 +84,7 @@ void inputBoard(const int possibilitiesSpiral[18]) {
 
   cout << "Game board with assigned possibilities: " << endl;
   printTiles(tc, ti);
+  loadBoard(tc, ti);
 }
 
 /**
