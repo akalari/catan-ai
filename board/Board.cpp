@@ -9,6 +9,7 @@ using namespace std;
 Tile tiles[NUM_TILES];
 Corner corners[NUM_CORNERS];
 Edge edges[NUM_EDGES];
+Port ports[NUM_PORTS];
 
 Tile::Tile():
     adjCorners {0, 0, 0, 0, 0, 0},
@@ -22,6 +23,16 @@ Edge::Edge():
 
 Corner::Corner():
     settlement(-1)
+{}
+
+Port::Port():
+	resource(-1),
+	terms(4)
+{}
+
+Port::Port(int r, int t):
+	resource(r),
+	terms(t)
 {}
 
 /**
@@ -119,4 +130,23 @@ void initCorners() {
             }
         }
     }
+}
+
+/**
+ * Set up board ports
+ */ 
+void initPorts() {
+	for(int p = 0; p < NUM_PORTS; p++) {
+		int i[4];
+		std::copy(std::begin(BOARD_PORTS[p]), std::end(BOARD_PORTS[p]), std::begin(i));
+		Tile &t = tiles[i[0]];
+		Edge* e = t.adjEdges[i[1]];
+		ports[p] = Port(i[2], i[3]);
+
+		for(int c = 0; c < 2; c++) {
+			ports[p].adjCorners[c] = e->adjCorners.at(c);
+			e->adjCorners.at(c)->adjPort = &ports[p];	
+		}
+
+	}
 }
