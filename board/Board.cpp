@@ -181,9 +181,9 @@ Corner* getOtherCorner(Edge* e, Corner* c) {
  */
 std::vector<Corner*> getSettlements(int number) {
 	std::vector<Corner*> matches;
-	for (Tile t : tiles) {
+	for (Tile &t : tiles) {
 		if (t.num != number) continue;
-		for (Corner* c : t->adjCorners) {
+		for (Corner *c : t.adjCorners) {
 			if (c->settlement > -1) matches.push_back(c);
 		}
 	}
@@ -195,10 +195,10 @@ std::vector<Corner*> getSettlements(int number) {
  */
 std::vector<Port*> portsOwned(int player) {
 	std::vector<Port*> ports;
-	for(Corner c:corners) {
-		if(c->settlement == player &&
-				c->adjPort != 0)
-			ports.push_back(c->adjPort);
+	for(Corner &c:corners) {
+		if(c.settlement == player &&
+				c.adjPort != 0)
+			ports.push_back(c.adjPort);
 	}
 	return ports;
 }
@@ -207,9 +207,9 @@ std::vector<Port*> portsOwned(int player) {
  * Checks if a new settlement is adjacent to a road
  * occupied by the player
  */
-boolean adjOwnRoad(Corner* settlement, int player) {
-	for (Edge* e : settlement->adjEdges) {
-		if(e->road != -1 && e-> road == player) return true;
+bool adjOwnRoad(Corner* settlement, int player) {
+	for (Edge *e : settlement->adjEdges) {
+		if(e->road != -1 && e->road == player) return true;
 	}
 	return false;
 }
@@ -218,12 +218,12 @@ boolean adjOwnRoad(Corner* settlement, int player) {
  * Checks if a new road is adjacent to a road or settlement occupied
  * by the player
  */
-boolean adjOwnProperty(Edge* road, int player) {
+bool adjOwnProperty(Edge* road, int player) {
   for (Corner* c : road->adjCorners) {
-    if (settlement == player)
+    if (c->settlement == player)
       return true;
     for (Edge* e : c->adjEdges)
-      if (road == player)
+      if (e->road == player)
         return true;
   }
   return false;
