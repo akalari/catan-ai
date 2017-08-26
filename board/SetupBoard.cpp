@@ -1,5 +1,5 @@
 #include <iostream>
-#include <stdio.h>
+#include <cstdio>
 
 #include "Board.h"
 #include "../elements/Elements.h"
@@ -7,12 +7,6 @@
 using namespace std;
 
 extern Tile tiles[NUM_TILES];
-
-void printTiles(char tc[NUM_TILES], int ti[NUM_TILES]);
-void inputBoard();
-void inputBoard(const int possibilitiesSpiral[18]);
-void loadBoard(char tc[NUM_TILES], int ti[NUM_TILES]);
-int getElement(char tc);
 
 int main() {
     initBoard();
@@ -36,11 +30,11 @@ void loadBoard(char tc[NUM_TILES], int ti[NUM_TILES]) {
  */
 int getElement(char tc) {
     switch(tc) {
-        case 'b': return BRICK;
-        case 'l': return LUMBER;
-        case 'w': return WOOL;
-        case 'g': return GRAIN;
-        case 'o': return ORE;
+        case 'b': return Resource::BRICK;
+        case 'l': return Resource::LUMBER;
+        case 'w': return Resource::WOOL;
+        case 'g': Resource::return GRAIN;
+        case 'o': Resource::return ORE;
         case 'd': return -1; // Desert
         default: return -2;
     }

@@ -1,3 +1,5 @@
+#include <cstddef>
+#include <cstdio>
 #include <vector>
 #include "../elements/Elements.h"
 
@@ -77,7 +79,7 @@ struct Corner {
   std::vector<Edge*> adjEdges; // Variable length: {2, 3}
   Port* adjPort; // Can be null
   int settlement;
-
+  
   Corner();
 };
 
@@ -95,5 +97,10 @@ void initBoard();
 void initTiles();
 void initEdges();
 void initCorners();
+Corner* getOtherCorner(Edge* e, Corner* c);
+bool isTwoAway(Corner* settlement);
+vector<Corner*> getSettlements(int number);
+vector<Port*> portsOwned(int player);
+boolean adjOwnRoad(Corner* settlement, int player)
 
 #endif

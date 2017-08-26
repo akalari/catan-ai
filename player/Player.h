@@ -2,6 +2,7 @@
 #include <iostream>
 #include <cstdio>
 #include <vector>
+#include <string>
 
 #include "../board/Board.h"
 
@@ -19,14 +20,21 @@ class Player {
     int numCities = 4;
     int color = -1;
     int score = 0;
+    string name = NULL;
+    string color_string;
   public:
     void addResCard();
     void takeResCard();
     void addDevCard();
     void takeDevCard();
+    void placeRoad();
     void placeRoad(Edge e);
-    void placeSettlement(Corner c);
+    void placeSettlement();
+    void placeSettlement(Corner c, bool isFirstSettlement);
+    void placeCity();
     void placeCity(Corner c);
+    string getName();
+    int getScore();
     Player () {}
 };
 

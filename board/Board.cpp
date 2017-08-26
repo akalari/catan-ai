@@ -134,7 +134,7 @@ void initCorners() {
 
 /**
  * Set up board ports
- */ 
+ */
 void initPorts() {
 	for(int p = 0; p < NUM_PORTS; p++) {
 		int i[4];
@@ -145,8 +145,88 @@ void initPorts() {
 
 		for(int c = 0; c < 2; c++) {
 			ports[p].adjCorners[c] = e->adjCorners.at(c);
-			e->adjCorners.at(c)->adjPort = &ports[p];	
+			e->adjCorners.at(c)->adjPort = &ports[p];
 		}
 
 	}
+}
+
+/**
+ * Checks if a settlement (or settlement spot)
+ * is >= 2 spots away from other settlements
+ */
+bool isTwoAway(Corner* settlement) {
+
+	// Check all adjacent edges
+	for (Edge *e : settlement->adjEdges) {
+		Corner* c = getOtherCorner(e, settlement);
+		// If there is a settlement, return false
+		if (c->settlement > -1) return false;
+	}
+	return true;
+}
+
+/**
+ * Returns the corner connected to the edge
+ * that is not *c
+ */
+Corner* getOtherCorner(Edge* e, Corner* c) {
+
+	Corner* front = e->adjCorners.front();
+	if (front == c) return e->adjCorners.back();
+	else return front;
+}
+
+/**
+ * Returns the list of occupied settlements adjacent
+ * to a tile with a specified number
+ */
+vector<Corner*> getSettlements(int number) {
+	vector<Corner*> matches;
+	for (Tile t : tiles) {
+		if (t.num != number) continue;
+		for (Corner* c : t->adjCorners) {
+			if (c->settlement > -1) matches.push_back(c);
+		}
+	}
+	return matches;
+}
+
+/**
+ * Returns a list of all of the ports owned by a player
+ */
+vector<Port*> portsOwned(int player) {
+	vector<Port*> ports;
+	for(Corner c:corners) {
+		if(c->settlement == player &&
+				c->adjPort != 0)
+			ports.push_back(c->adjPort);
+	}
+	return ports;
+}
+
+/**
+ * Checks if a new settlement is adjacent to a road
+ * occupied by the player
+ */
+boolean adjOwnRoad(Corner* settlement, int player) {
+	for (Edge* e : settlement->adjEdges) {
+		if(e->road != -1 && e-> road == player) return true;
+	}
+	return false;
+}
+
+/**
+ * Checks if a new road is adjacent to a road or settlement occupied
+ * by the player
+ */
+boolean adjOwnProperty(Edge* road, int player) {
+  for (Corner* c : road->adjCorners) {
+    if (settlement == player)
+      return true;
+    for (Edge* e : c->adjEdges)
+      if (road == player)
+        return true;
+  }
+  return false;
 }
