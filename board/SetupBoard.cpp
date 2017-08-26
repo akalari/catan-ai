@@ -1,6 +1,7 @@
 #include <iostream>
 #include <cstdio>
 
+#include "SetupBoard.h"
 #include "Board.h"
 #include "../elements/Elements.h"
 
