@@ -4,8 +4,6 @@
 
 #include "Board.h"
 
-using namespace std;
-
 Tile tiles[NUM_TILES];
 Corner corners[NUM_CORNERS];
 Edge edges[NUM_EDGES];
@@ -181,8 +179,8 @@ Corner* getOtherCorner(Edge* e, Corner* c) {
  * Returns the list of occupied settlements adjacent
  * to a tile with a specified number
  */
-vector<Corner*> getSettlements(int number) {
-	vector<Corner*> matches;
+std::vector<Corner*> getSettlements(int number) {
+	std::vector<Corner*> matches;
 	for (Tile t : tiles) {
 		if (t.num != number) continue;
 		for (Corner* c : t->adjCorners) {
@@ -195,8 +193,8 @@ vector<Corner*> getSettlements(int number) {
 /**
  * Returns a list of all of the ports owned by a player
  */
-vector<Port*> portsOwned(int player) {
-	vector<Port*> ports;
+std::vector<Port*> portsOwned(int player) {
+	std::vector<Port*> ports;
 	for(Corner c:corners) {
 		if(c->settlement == player &&
 				c->adjPort != 0)

@@ -4,8 +4,6 @@
 #include "Board.h"
 #include "../elements/Elements.h"
 
-using namespace std;
-
 extern Tile tiles[NUM_TILES];
 
 int main() {
@@ -49,8 +47,8 @@ void inputBoard() {
 
   for(int i = 0; i < NUM_TILES; i++) {
     printTiles(tc, ti);
-    cout << "Please specify tile " << i << ": [blwgod][1-12] -> ";
-    cin >> tc[i] >> ti[i];
+	std::cout << "Please specify tile " << i << ": [blwgod][1-12] -> ";
+	std::cin >> tc[i] >> ti[i];
   }
 
   loadBoard(tc, ti);
@@ -65,9 +63,9 @@ void inputBoard(const int possibilitiesSpiral[18]) {
 
   for(int i = 0; i < NUM_TILES; i++) {
     printTiles(tc, ti);
-    cout << "Please specify tile " << i << ": [blwgod]-> ";
-    cin >> tc[i];
-    cout << endl;
+	std::cout << "Please specify tile " << i << ": [blwgod]-> ";
+	std::cin >> tc[i];
+	std::cout << std::endl;
   }
 
   int c = 0;
@@ -76,7 +74,7 @@ void inputBoard(const int possibilitiesSpiral[18]) {
       ti[TILES_SPIRAL[i]] = possibilitiesSpiral[c++];
   }
 
-  cout << "Game board with assigned possibilities: " << endl;
+  std::cout << "Game board with assigned possibilities: " << std::endl;
   printTiles(tc, ti);
   loadBoard(tc, ti);
 }
@@ -87,12 +85,12 @@ void inputBoard(const int possibilitiesSpiral[18]) {
 void printTiles(char tc[NUM_TILES], int ti[NUM_TILES]) {
 
     for(int i = 0; i < NUM_TILES; i++) {
-      if(i == 0 || i == 16) cout << "\n     ";
-      else if(i == 3 || i == 12) cout << "\n   ";
-      else if(i == 7)cout << "\n";
-      if(tc[i])printf("[%c%02d]", tc[i], ti[i]);
-      else printf("[ %1d ]", i);
+      if(i == 0 || i == 16) std::cout << "\n     ";
+      else if(i == 3 || i == 12) std::cout << "\n   ";
+      else if(i == 7) std::cout << "\n";
+      if(tc[i]) std::printf("[%c%02d]", tc[i], ti[i]);
+      else std::printf("[ %1d ]", i);
     }
 
-    cout << "\n\n";
+	std::cout << "\n\n";
 }

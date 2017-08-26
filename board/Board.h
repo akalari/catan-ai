@@ -99,8 +99,8 @@ void initEdges();
 void initCorners();
 Corner* getOtherCorner(Edge* e, Corner* c);
 bool isTwoAway(Corner* settlement);
-vector<Corner*> getSettlements(int number);
-vector<Port*> portsOwned(int player);
+std::vector<Corner*> getSettlements(int number);
+std::vector<Port*> portsOwned(int player);
 boolean adjOwnRoad(Corner* settlement, int player)
 
 #endif
