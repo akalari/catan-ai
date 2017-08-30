@@ -44,13 +44,18 @@ int getElement(char tc) {
     }
 }
 
+/**
+ * Generates the board by randomly shuffling tiles
+ * Uses the possibilitiesSpiral that is provided
+ */
 void randomBoard(const int possibilitiesSpiral[18]) {
     std::array<char,19> tc {'b','b','b','o','o','o','l','l','l','l',
         'w','w','w','w','g','g','g','g','d'};
     int ti[NUM_TILES] {0};
 
-    auto rng = std::default_random_engine {};
-    std::shuffle(tc.begin(), tc.end(), rng);
+    std::random_device rng;
+    std::mt19937 urng(rng());
+    std::shuffle(tc.begin(), tc.end(), urng);
 
     int c =0;
     for (int i = 0; i < NUM_TILES; i++) {
