@@ -58,9 +58,6 @@ void randomBoard(const int possibilitiesSpiral[18]) {
       ti[TILES_SPIRAL[i]] = possibilitiesSpiral[c++];
     }
 
-    std::cout << "Random Board: " << std::endl;
-    printTiles(tc.data(), ti);
-
     loadBoard(tc.data(), ti);
 
 }
@@ -101,23 +98,5 @@ void inputBoard(const int possibilitiesSpiral[18]) {
       ti[TILES_SPIRAL[i]] = possibilitiesSpiral[c++];
   }
 
-  std::cout << "Game board with assigned possibilities: " << std::endl;
-  printTiles(tc, ti);
   loadBoard(tc, ti);
-}
-
-/**
- * Prints out the tiles
- */
-void printTiles(char tc[NUM_TILES], int ti[NUM_TILES]) {
-
-    for(int i = 0; i < NUM_TILES; i++) {
-      if(i == 0 || i == 16) std::cout << "\n     ";
-      else if(i == 3 || i == 12) std::cout << "\n   ";
-      else if(i == 7) std::cout << "\n";
-      if(tc[i]) std::printf("[%c%02d]", tc[i], ti[i]);
-      else std::printf("[ %1d ]", i);
-    }
-
-    std::cout << "\n\n";
 }
