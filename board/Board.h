@@ -17,16 +17,16 @@ const int TILES_SPIRAL[] =
   {0, 1, 2, 6, 11, 15, 18, 17, 16, 12, 7, 3, 4, 5, 10, 14, 13, 8, 9};
 
 const int BOARD_PORTS[][4]
-{	//tile,	edge, resource, term
-	{0, 0, -1, 3},
-	{1, 1, GRAIN, 2},
-	{3, 5, LUMBER, 2},
-	{6, 1, ORE, 2},
-	{11, 2, -1, 3},
-	{12, 5, BRICK, 2},
-	{15, 3, WOOL, 2},
-	{16, 4, -1, 3},
-	{17, 3, -1, 3}
+{    //tile,    edge, resource, term
+    {0, 0, -1, 3},
+    {1, 1, GRAIN, 2},
+    {3, 5, LUMBER, 2},
+    {6, 1, ORE, 2},
+    {11, 2, -1, 3},
+    {12, 5, BRICK, 2},
+    {15, 3, WOOL, 2},
+    {16, 4, -1, 3},
+    {17, 3, -1, 3}
 };
 
 const int TILE_ADJACENCIES[19][6] =
@@ -67,7 +67,7 @@ struct Tile {
 
 struct Edge {
   static const int NONE = -2;
-   
+
   std::vector<Corner*> adjCorners;
   int road;
 
@@ -75,8 +75,8 @@ struct Edge {
 };
 
 struct Corner {
-  static const int NO_SETTLEMENT = -2;  
-  
+  static const int NO_SETTLEMENT = -2;
+
   std::vector<Tile*> adjTiles; // Variable length: {1, 2, 3}
   std::vector<Edge*> adjEdges; // Variable length: {2, 3}
   Port* adjPort; // Can be null

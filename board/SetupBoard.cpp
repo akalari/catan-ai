@@ -13,8 +13,8 @@ extern Corner corners[NUM_CORNERS];
 
 int main() {
     initBoard();
-	randomBoard(TILE_POSSIBILITIES);
-	printBoard();
+    randomBoard(TILE_POSSIBILITIES);
+    printBoard();
     return 0;
 }
 
@@ -45,23 +45,23 @@ int getElement(char tc) {
 }
 
 void randomBoard(const int possibilitiesSpiral[18]) {
-	std::array<char,19> tc {'b','b','b','o','o','o','l','l','l','l',
-		'w','w','w','w','g','g','g','g','d'};
-	int ti[NUM_TILES] {0};
+    std::array<char,19> tc {'b','b','b','o','o','o','l','l','l','l',
+        'w','w','w','w','g','g','g','g','d'};
+    int ti[NUM_TILES] {0};
 
-	auto rng = std::default_random_engine {};
-	std::shuffle(tc.begin(), tc.end(), rng);
+    auto rng = std::default_random_engine {};
+    std::shuffle(tc.begin(), tc.end(), rng);
 
-	int c =0;
-	for (int i = 0; i < NUM_TILES; i++) {
+    int c =0;
+    for (int i = 0; i < NUM_TILES; i++) {
       if(tc[TILES_SPIRAL[i]] == 'd')continue;
       ti[TILES_SPIRAL[i]] = possibilitiesSpiral[c++];
-	}
+    }
 
-	std::cout << "Random Board: " << std::endl;
-	printTiles(tc.data(), ti);
+    std::cout << "Random Board: " << std::endl;
+    printTiles(tc.data(), ti);
 
-	loadBoard(tc.data(), ti);
+    loadBoard(tc.data(), ti);
 
 }
 
@@ -74,8 +74,8 @@ void inputBoard() {
 
   for(int i = 0; i < NUM_TILES; i++) {
     printTiles(tc, ti);
-	std::cout << "Please specify tile " << i << ": [blwgod][1-12] -> ";
-	std::cin >> tc[i] >> ti[i];
+    std::cout << "Please specify tile " << i << ": [blwgod][1-12] -> ";
+    std::cin >> tc[i] >> ti[i];
   }
 
   loadBoard(tc, ti);
@@ -90,9 +90,9 @@ void inputBoard(const int possibilitiesSpiral[18]) {
 
   for(int i = 0; i < NUM_TILES; i++) {
     printTiles(tc, ti);
-	std::cout << "Please specify tile " << i << ": [blwgod]-> ";
-	std::cin >> tc[i];
-	std::cout << std::endl;
+    std::cout << "Please specify tile " << i << ": [blwgod]-> ";
+    std::cin >> tc[i];
+    std::cout << std::endl;
   }
 
   int c = 0;
@@ -119,5 +119,5 @@ void printTiles(char tc[NUM_TILES], int ti[NUM_TILES]) {
       else std::printf("[ %1d ]", i);
     }
 
-	std::cout << "\n\n";
+    std::cout << "\n\n";
 }
