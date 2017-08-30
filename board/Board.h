@@ -1,8 +1,9 @@
-#include <vector> // std::vector
-#include "../elements/Elements.h"
-
 #ifndef BOARD_H
 #define BOARD_H
+
+#include <string> // std::string
+#include <vector> // std::vector
+#include "../elements/Elements.h"
 
 const int NUM_TILES = 19;
 const int NUM_CORNERS = 54;
