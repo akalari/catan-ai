@@ -354,20 +354,20 @@ void printTile(Tile *t, std::string (&out)[9], bool l, bool u, bool d, bool r) {
 	if(l && u) {
 		out[0] += s;
 		out[1] += s;
-		out[2] += settColor(t,5) + "s" + clr;
+		out[2] += settColor(t,5) + "S" + clr;
 	} if(l) {
 		std::string cr5 = roadColor(t,5);
 		out[3] += cr5 + "|" + clr;
 	 	out[4] += cr5 + "|" + clr;
 		out[5] += cr5 + "|" + clr;
 	} if(l && d) {
-		out[6] += settColor(t,4) + "s" + clr;
+		out[6] += settColor(t,4) + "S" + clr;
 		out[7] += s;
 		out[8] += s;
 	}
 	if(u) {
 		out[0] += s4 + roadColor(t,0) + "_ " + 
-			settColor(t,0) + "s" + roadColor(t,1) + " _" + s4 + clr;
+			settColor(t,0) + "S" + roadColor(t,1) + " _" + s4 + clr;
 		out[1] += s + roadColor(t,0) + "_--" + s5 + roadColor(t,1) + "--_" + s + clr;
 		out[2] += s13;
 	}
@@ -377,20 +377,20 @@ void printTile(Tile *t, std::string (&out)[9], bool l, bool u, bool d, bool r) {
 	if(d) {
 		out[6] += s + roadColor(t,4) + "_" + s9 + roadColor(t,3) + "_" + s + clr;
 		out[7] += s2 + roadColor(t,4) + "--_" + s3 + roadColor(t,3) + "_--" + s2 + clr;
-		out[8] += s6 + settColor(t,3) + "s" + s6 + clr;
+		out[8] += s6 + settColor(t,3) + "S" + s6 + clr;
 	}
 
 	if(r && u) {
 		out[0] += s;
 		out[1] += s;
-		out[2] += settColor(t,1) + "s" + clr;
+		out[2] += settColor(t,1) + "S" + clr;
 	} if(r) {
 		std::string cr2 = roadColor(t,2);
 		out[3] += cr2 + "|" + clr;
 		out[4] += cr2 + "|" + clr;
 		out[5] += cr2 + "|" + clr;
 	} if(r && d) {
-		out[6] += settColor(t,2) + "s" + clr;
+		out[6] += settColor(t,2) + "S" + clr;
 		out[7] += s;
 		out[8] += s;
 	}
