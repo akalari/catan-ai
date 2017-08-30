@@ -11,13 +11,6 @@ extern Tile tiles[NUM_TILES];
 extern Edge edges[NUM_EDGES];
 extern Corner corners[NUM_CORNERS];
 
-int main() {
-    initBoard();
-    randomBoard(TILE_POSSIBILITIES);
-    printBoard();
-    return 0;
-}
-
 /**
  * Loads user-input tile data into the Board
  */
