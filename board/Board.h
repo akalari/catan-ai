@@ -1,6 +1,4 @@
-#include <cstddef>
-#include <cstdio>
-#include <vector>
+#include <vector> // std::vector
 #include "../elements/Elements.h"
 
 #ifndef BOARD_H

@@ -1,7 +1,4 @@
-#include <cstddef>
-#include <iostream>
-#include <stdio.h>
-
+#include <iostream> // std::cout, std::endl, etc
 #include "Board.h"
 
 Tile tiles[NUM_TILES];
