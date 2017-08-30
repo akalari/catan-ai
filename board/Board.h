@@ -68,6 +68,8 @@ struct Tile {
 };
 
 struct Edge {
+  static const int NONE = -2;
+   
   std::vector<Corner*> adjCorners;
   int road;
 
@@ -75,11 +77,13 @@ struct Edge {
 };
 
 struct Corner {
+  static const int NO_SETTLEMENT = -2;  
+  
   std::vector<Tile*> adjTiles; // Variable length: {1, 2, 3}
   std::vector<Edge*> adjEdges; // Variable length: {2, 3}
   Port* adjPort; // Can be null
   int settlement;
-  
+
   Corner();
 };
 
@@ -97,10 +101,13 @@ void initBoard();
 void initTiles();
 void initEdges();
 void initCorners();
+
 Corner* getOtherCorner(Edge* e, Corner* c);
-bool isTwoAway(Corner* settlement);
 std::vector<Corner*> getSettlements(int number);
 std::vector<Port*> portsOwned(int player);
+
+bool isTwoAway(Corner* settlement);
 bool adjOwnRoad(Corner* settlement, int player);
+bool adjOwnProperty(Edge* road, int player);
 
 #endif

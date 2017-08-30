@@ -16,19 +16,22 @@ Tile::Tile():
 {}
 
 Edge::Edge():
-    road(-1)
+	road(Edge::NONE)
 {}
 
 Corner::Corner():
-    settlement(-1)
+    settlement(Corner::NO_SETTLEMENT),
+	adjPort(0)
 {}
 
 Port::Port():
+	adjCorners {0, 0},
 	resource(-1),
 	terms(4)
 {}
 
 Port::Port(int r, int t):
+	adjCorners {0, 0},
 	resource(r),
 	terms(t)
 {}
@@ -150,43 +153,35 @@ void initPorts() {
 }
 
 /**
- * Checks if a settlement (or settlement spot)
- * is >= 2 spots away from other settlements
- */
-bool isTwoAway(Corner* settlement) {
-
-	// Check all adjacent edges
-	for (Edge *e : settlement->adjEdges) {
-		Corner* c = getOtherCorner(e, settlement);
-		// If there is a settlement, return false
-		if (c->settlement > -1) return false;
-	}
-	return true;
-}
-
-/**
  * Returns the corner connected to the edge
  * that is not *c
  */
 Corner* getOtherCorner(Edge* e, Corner* c) {
-
 	Corner* front = e->adjCorners.front();
 	if (front == c) return e->adjCorners.back();
 	else return front;
 }
 
 /**
- * Returns the list of occupied settlements adjacent
- * to a tile with a specified number
- */
-std::vector<Corner*> getSettlements(int number) {
-	std::vector<Corner*> matches;
-	for (Tile &t : tiles) {
-		if (t.num != number) continue;
-		for (Corner *c : t.adjCorners) {
-			if (c->settlement > -1) matches.push_back(c);
-		}
+ * Returns a list of tiles with a certain number
+ * If the tile has the robber, it isn't included
+ */ 
+std::vector<Tile*> getTiles(int num) {
+	std::vector<Tile*> matches;
+	for(Tile &t:tiles) {
+		if(t.num == num && !t.robber)
+			matches.push_back(&t);
 	}
+}
+
+/**
+ * Returns the list of occupied settlements adjacent
+ * to a tile
+ */
+std::vector<Corner*> getSettlements(Tile *t) {
+	std::vector<Corner*> matches;
+	for (Corner *c : t->adjCorners)
+		if (c->settlement != Corner::NO_SETTLEMENT) matches.push_back(c);
 	return matches;
 }
 
@@ -204,12 +199,26 @@ std::vector<Port*> portsOwned(int player) {
 }
 
 /**
+ * Checks if a settlement (or settlement spot)
+ * is >= 2 spots away from other settlements
+ */
+bool isTwoAway(Corner* settlement) {
+	// Check all adjacent edges
+	for (Edge *e : settlement->adjEdges) {
+		Corner* c = getOtherCorner(e, settlement);
+		// If there is a settlement, return false
+		if (c->settlement != Corner::NO_SETTLEMENT) return false;
+	}
+	return true;
+}
+
+/**
  * Checks if a new settlement is adjacent to a road
  * occupied by the player
  */
 bool adjOwnRoad(Corner* settlement, int player) {
 	for (Edge *e : settlement->adjEdges) {
-		if(e->road != -1 && e->road == player) return true;
+		if(e->road != Edge::NONE && e->road == player) return true;
 	}
 	return false;
 }
