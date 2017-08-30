@@ -30,9 +30,9 @@ class Player {
     void placeRoad();
     void placeRoad(Edge e);
     void placeSettlement();
-    void placeSettlement(Corner c, bool isFirstSettlement);
+    void placeSettlement(Corner* c, bool isFirstSettlement);
     void placeCity();
-    void placeCity(Corner c);
+    void placeCity(Corner* c);
     string getName();
     int getScore();
     Player () {}
