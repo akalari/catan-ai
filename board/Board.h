@@ -5,6 +5,8 @@
 #include <vector> // std::vector
 #include "../elements/Elements.h"
 
+using namespace std;
+
 const int NUM_TILES = 19;
 const int NUM_CORNERS = 54;
 const int NUM_EDGES = 72;
@@ -18,7 +20,7 @@ const int TILES_SPIRAL[] =
   {0, 1, 2, 6, 11, 15, 18, 17, 16, 12, 7, 3, 4, 5, 10, 14, 13, 8, 9};
 
 const int BOARD_PORTS[][4]
-{    //tile,    edge, resource, term
+{    // tile, edge, resource, term
     {0, 0, -1, 3},
     {1, 1, GRAIN, 2},
     {3, 5, LUMBER, 2},
@@ -51,49 +53,83 @@ const int TILE_ADJACENCIES[19][6] =
   {13, 14, 18, -1, -1, 16},  //17
   {14, 15, -1, -1, -1, 17}}; //18
 
-struct Corner;
-struct Edge;
-struct Tile;
-struct Port;
+class Corner;
+class Edge;
+class Tile;
+class Port;
 
-struct Tile {
-  Corner* adjCorners[6];
-  Edge* adjEdges[6];
-  int num;
-  int resource;
-  bool robber;
-
-  Tile();
+class Tile {
+ private:
+   int adjCorners[6];
+   int adjEdges[6];
+   int num;
+   int resource;
+   bool robber;
+   int index;
+ public:
+   Tile();
+   &int[6] getAdjCorners();
+   &int[6] getAdjEdges();
+   int getNum();
+   void setNum(int n);
+   int getResource();
+   int setResource(int res);
+   int getIndex();
+   void setIndex(int ind);
+   bool getRobber();
+   void setRobber(bool robberStatus);
 };
 
-struct Edge {
-  static const int NONE = -2;
-
-  std::vector<Corner*> adjCorners;
-  int road;
-
-  Edge();
+class Edge {
+ private:
+   vector<int> adjCorners;
+   int road;
+   int index;
+ public:
+   static const int NONE = -2;
+   &vector<int> getAdjCorners();
+   int getRoad();
+   void setRoad(int color);
+   int getIndex();
+   void setIndex(int ind);
+   Edge();
 };
 
-struct Corner {
-  static const int NO_SETTLEMENT = -2;
-
-  std::vector<Tile*> adjTiles; // Variable length: {1, 2, 3}
-  std::vector<Edge*> adjEdges; // Variable length: {2, 3}
-  Port* adjPort; // Can be null
-  int settlement;
-
-  Corner();
+class Corner {
+ private:
+   vector<int> adjTiles; // Variable length: {1, 2, 3}
+   vector<int> adjEdges; // Variable length: {2, 3}
+   int adjPort; // Can be null
+   int settlement;
+   int index;
+ public:
+   static const int NO_SETTLEMENT = -2;
+   &vector<int> getAdjTiles();
+   &vector<int> getAdjEdges();
+   int getPort();
+   void setPort(int trader);
+   int getIndex();
+   void setIndex(int ind);
+   Corner();
 };
 
 //TODO: treat bank like a port
-struct Port {
-  Corner* adjCorners[2];
-  int resource;
-  int terms; // Number required to trade
-
-  Port();
-  Port(int r, int t);
+class Port {
+ private:
+   int adjCorners[2];
+   int resource;
+   int terms; // Number required to trade
+   int index;
+ public:
+   &int[2] getAdjCorners();
+   int getResource();
+   void setResource(int res);
+   int getTerms();
+   void setTerms(int tms);
+   int getIndex();
+   void setIndex(int ind);
+   Port();
+   Port(int r, int t);
 };
 
 void initBoard();
@@ -102,8 +138,8 @@ void initEdges();
 void initCorners();
 
 Corner* getOtherCorner(Edge* e, Corner* c);
-std::vector<Corner*> getSettlements(int number);
-std::vector<Port*> portsOwned(int player);
+vector<Corner*> getSettlements(int number);
+vector<Port*> portsOwned(int player);
 
 bool isTwoAway(Corner* settlement);
 bool adjOwnRoad(Corner* settlement, int player);

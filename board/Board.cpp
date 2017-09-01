@@ -1,5 +1,9 @@
 #include <iostream> // std::cout, std::endl, etc
+#include <vector>
+
 #include "Board.h"
+
+using namespace std;
 
 Tile tiles[NUM_TILES];
 Corner corners[NUM_CORNERS];
@@ -12,14 +16,38 @@ Tile::Tile():
     robber(false), num(-1), resource(-1)
 {}
 
+&int[6] Tile::getAdjCorners() { return &adjCorners[6]; }
+&int[6] Tile::getAdjEdges() { return &adjEdges[6]; }
+int Tile::getNum() { return num; }
+void Tile::setNum(int n) { num = n; }
+int Tile::getResource() { return resource; }
+void Tile::setResource(int res) { resource = res; }
+int Tile::getIndex() { return index; }
+int Tile::setIndex(int ind) { index = ind; }
+bool Tile::getRobber() { return robber; }
+void Tile::setRobber(bool robberStatus) { robber = robberStatus; }
+
 Edge::Edge():
     road(Edge::NONE)
 {}
+
+&vector<int> Edge::getAdjCorners() { return &adjCorners<int>; }
+int Edge::getRoad() { return road; }
+void Edge::setRoad(int color) { road = color; }
+int Edge::getIndex() { return index; }
+int Edge::setIndex(int ind) { index = ind; }
 
 Corner::Corner():
     settlement(Corner::NO_SETTLEMENT),
     adjPort(0)
 {}
+
+&vector<int> Corner::getAdjTiles() { return &adjTiles<int>; }
+&vector<int> Corner::getAdjEdges() { return &adjEdges<int>; }
+int Corner::getPort() { return adjPort; }
+void Corner::setPort(int trader) { trader = adjPort; }
+int Corner::getIndex() { return index; }
+int Corner::setIndex() { index = ind; }
 
 Port::Port():
     adjCorners {0, 0},
@@ -28,10 +56,18 @@ Port::Port():
 {}
 
 Port::Port(int r, int t):
-    adjCorners {0, 0},
-    resource(r),
-    terms(t)
+  adjCorners {0, 0},
+  resource(r),
+  terms(t)
 {}
+
+&int[2] Port::getAdjCorners() { return &adjCorners[2]; }
+int Port::getResource() { return resource; }
+void Port::setResource(int res) { resource = res; }
+int Port::getTerms() { return terms; }
+void Port::setTerms(int tms) { terms = tms; }
+int Port::getIndex() { return index; }
+void Port::setIndex() { index = ind; }
 
 /**
  * Assigns relations between tiles, edges, and corners
