@@ -4,8 +4,10 @@
 #include "BoardUtils.h"
 #include "SetupBoard.h"
 
+using namespace std;
+
 int main() {
-    std::cout << "Testing Board" << std::endl;
+    cout << "Testing Board" << endl;
     initBoard();
     randomBoard(TILE_POSSIBILITIES);
     printBoard();

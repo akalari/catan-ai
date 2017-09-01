@@ -17,8 +17,8 @@ extern Port ports[NUM_PORTS];
  * that is not *c
  */
 int getOtherCorner(int e, int c) {
-    int front = e.getAdjCorners().front();
-    if (front == c) return e.getAdjCorners().back();
+    int front = edges[e].getAdjCorners().front();
+    if (front == c) return edges[e].getAdjCorners().back();
     else return front;
 }
 
@@ -28,10 +28,11 @@ int getOtherCorner(int e, int c) {
  */
 vector<int> getTiles(int num) {
     vector<int> matches;
-    for(Tile &t : tiles) {
-        if(t.num == num && !t.getRobber)
-            matches.push_back(&t);
+    for(int i = 0; i < NUM_TILES; i++) {
+        if(tiles[i].getNum() == num && !tiles[i].getRobber())
+            matches.push_back(i);
     }
+    return matches;
 }
 
 /**
@@ -53,7 +54,7 @@ vector<int> portsOwned(int player) {
     vector<int> ports;
     for(Corner &c : corners) {
       if(c.getSettlement() == player && c.getPort() != 0)
-        ports.push_back(c.getPort().getIndex());
+        ports.push_back(c.getPort());
     }
     return ports;
 }
@@ -109,33 +110,33 @@ void printBoard() {
     cout << endl << color(-2) << endl;
     string out[9];
     printStartRow(out, 0);
-    printTile(&tiles[0], out, 1,1,0,1);
-    printTile(&tiles[1], out, 0,1,0,1);
-    printTile(&tiles[2], out, 0,1,0,1);
+    printTile(0, out, 1,1,0,1);
+    printTile(1, out, 0,1,0,1);
+    printTile(2, out, 0,1,0,1);
     printRows(out);
     printStartRow(out, 1);
-    printTile(&tiles[3], out, 1,1,0,1);
-    printTile(&tiles[4], out, 0,1,0,1);
-    printTile(&tiles[5], out, 0,1,0,1);
-    printTile(&tiles[6], out, 0,1,0,1);
+    printTile(3, out, 1,1,0,1);
+    printTile(4, out, 0,1,0,1);
+    printTile(5, out, 0,1,0,1);
+    printTile(6, out, 0,1,0,1);
     printRows(out);
     printStartRow(out, 2);
-    printTile(&tiles[7], out, 1,1,1,1);
-    printTile(&tiles[8], out, 0,1,1,1);
-    printTile(&tiles[9], out, 0,1,1,1);
-    printTile(&tiles[10], out, 0,1,1,1);
-    printTile(&tiles[11], out, 0,1,1,1);
+    printTile(7, out, 1,1,1,1);
+    printTile(8, out, 0,1,1,1);
+    printTile(9, out, 0,1,1,1);
+    printTile(10, out, 0,1,1,1);
+    printTile(11, out, 0,1,1,1);
     printRows(out);
     printStartRow(out, 3);
-    printTile(&tiles[12], out, 1,0,1,1);
-    printTile(&tiles[13], out, 0,0,1,1);
-    printTile(&tiles[14], out, 0,0,1,1);
-    printTile(&tiles[15], out, 0,0,1,1);
+    printTile(12, out, 1,0,1,1);
+    printTile(13, out, 0,0,1,1);
+    printTile(14, out, 0,0,1,1);
+    printTile(15, out, 0,0,1,1);
     printRows(out);
     printStartRow(out, 4);
-    printTile(&tiles[16], out, 1,0,1,1);
-    printTile(&tiles[17], out, 0,0,1,1);
-    printTile(&tiles[18], out, 0,0,1,1);
+    printTile(16, out, 1,0,1,1);
+    printTile(17, out, 0,0,1,1);
+    printTile(18, out, 0,0,1,1);
     printRows(out);
     cout << endl << color(0) << endl;
 }
@@ -178,7 +179,7 @@ void printRows(string (&out)[9]) {
  * at t[r], in ANSI escape string format
  */
 string roadColor(int tile, int r) {
-  return color(tile.getAdjEdges()[r].getRoad());
+  return color(edges[tiles[tile].getAdjEdges()[r]].getRoad());
 }
 
 /**
@@ -186,7 +187,7 @@ string roadColor(int tile, int r) {
  * at t[c], in ANSI escape string format
  */
 string settColor(int tile, int c) {
-  return color(tile.getAdjCorners()[c].getSettlement());
+  return color(corners[tiles[tile].getAdjCorners()[c]].getSettlement());
 }
 
 
@@ -216,43 +217,43 @@ void printTile(int tile, string (&out)[9], bool l, bool u, bool d, bool r) {
     if(l && u) {
         out[0] += s;
         out[1] += s;
-        out[2] += settColor(tiles[tile],5) + "S" + clr;
+        out[2] += settColor(tile,5) + "S" + clr;
     } if(l) {
-        string cr5 = roadColor(tiles[tile],5);
+        string cr5 = roadColor(tile,5);
         out[3] += cr5 + "|" + clr;
         out[4] += cr5 + "|" + clr;
         out[5] += cr5 + "|" + clr;
     } if(l && d) {
-        out[6] += settColor(tiles[tile],4) + "S" + clr;
+        out[6] += settColor(tile,4) + "S" + clr;
         out[7] += s;
         out[8] += s;
     }
     if(u) {
-        out[0] += s4 + roadColor(tiles[tile],0) + "_ " +
-            settColor(tiles[tile],0) + "S" + roadColor(tiles[tile],1) + " _" + s4 + clr;
-        out[1] += s + roadColor(tiles[tile],0) + "_--" + s5 + roadColor(tiles[tile],1) + "--_" + s + clr;
+        out[0] += s4 + roadColor(tile,0) + "_ " +
+            settColor(tile,0) + "S" + roadColor(tile,1) + " _" + s4 + clr;
+        out[1] += s + roadColor(tile,0) + "_--" + s5 + roadColor(tile,1) + "--_" + s + clr;
         out[2] += s13;
     }
 
-    printTileMiddle(tiles[tile], out);
+    printTileMiddle(tile, out);
 
     if(d) {
-        out[6] += s + roadColor(tiles[tile],4) + "_" + s9 + roadColor(tiles[tile],3) + "_" + s + clr;
-        out[7] += s2 + roadColor(tiles[tile],4) + "--_" + s3 + roadColor(tiles[tile],3) + "_--" + s2 + clr;
-        out[8] += s6 + settColor(tiles[tile],3) + "S" + s6 + clr;
+        out[6] += s + roadColor(tile,4) + "_" + s9 + roadColor(tile,3) + "_" + s + clr;
+        out[7] += s2 + roadColor(tile,4) + "--_" + s3 + roadColor(tile,3) + "_--" + s2 + clr;
+        out[8] += s6 + settColor(tile,3) + "S" + s6 + clr;
     }
 
     if(r && u) {
         out[0] += s;
         out[1] += s;
-        out[2] += settColor(tiles[tile],1) + "S" + clr;
+        out[2] += settColor(tile,1) + "S" + clr;
     } if(r) {
-        string cr2 = roadColor(tiles[tile],2);
+        string cr2 = roadColor(tile,2);
         out[3] += cr2 + "|" + clr;
         out[4] += cr2 + "|" + clr;
         out[5] += cr2 + "|" + clr;
     } if(r && d) {
-        out[6] += settColor(tiles[tile],2) + "S" + clr;
+        out[6] += settColor(tile,2) + "S" + clr;
         out[7] += s;
         out[8] += s;
     }

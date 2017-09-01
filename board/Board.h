@@ -19,7 +19,7 @@ const int TILE_POSSIBILITIES[] =
 const int TILES_SPIRAL[] =
   {0, 1, 2, 6, 11, 15, 18, 17, 16, 12, 7, 3, 4, 5, 10, 14, 13, 8, 9};
 
-const int BOARD_PORTS[][4]
+const int BOARD_PORTS[][4] =
 {    // tile, edge, resource, term
     {0, 0, -1, 3},
     {1, 1, GRAIN, 2},
