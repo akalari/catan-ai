@@ -68,12 +68,12 @@ class Tile {
    int index;
  public:
    Tile();
-   &int[6] getAdjCorners();
-   &int[6] getAdjEdges();
+   int (&getAdjCorners())[6];
+   int (&getAdjEdges())[6];
    int getNum();
    void setNum(int n);
    int getResource();
-   int setResource(int res);
+   void setResource(int res);
    int getIndex();
    void setIndex(int ind);
    bool getRobber();
@@ -87,7 +87,7 @@ class Edge {
    int index;
  public:
    static const int NONE = -2;
-   &vector<int> getAdjCorners();
+   vector<int> &getAdjCorners();
    int getRoad();
    void setRoad(int color);
    int getIndex();
@@ -104,8 +104,8 @@ class Corner {
    int index;
  public:
    static const int NO_SETTLEMENT = -2;
-   &vector<int> getAdjTiles();
-   &vector<int> getAdjEdges();
+   vector<int> &getAdjTiles();
+   vector<int> &getAdjEdges();
    int getPort();
    void setPort(int trader);
    int getSettlement();
@@ -123,7 +123,7 @@ class Port {
    int terms; // Number required to trade
    int index;
  public:
-   &int[2] getAdjCorners();
+   int (&getAdjCorners())[2];
    int getResource();
    void setResource(int res);
    int getTerms();

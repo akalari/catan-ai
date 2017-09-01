@@ -18,8 +18,9 @@ extern Corner corners[NUM_CORNERS];
 void loadBoard(char tc[NUM_TILES], int ti[NUM_TILES]) {
     for(int t = 0; t < NUM_TILES; t++) {
         Tile &tile = tiles[t];
-        tile.resource = getElement(tc[t]);
-        tile.num = ti[t];
+        tile.setResource(getElement(tc[t]));
+        tile.setNum(ti[t]);
+        tile.setIndex(t);
     }
 }
 
