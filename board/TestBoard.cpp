@@ -1,6 +1,7 @@
 #include <iostream> // std::cout
 
 #include "Board.h"
+#include "BoardUtils.h"
 #include "SetupBoard.h"
 
 int main() {

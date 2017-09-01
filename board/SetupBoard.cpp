@@ -5,6 +5,7 @@
 
 #include "SetupBoard.h"
 #include "Board.h"
+#include "BoardUtils.h"
 #include "../elements/Elements.h"
 
 extern Tile tiles[NUM_TILES];
