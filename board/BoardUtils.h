@@ -3,20 +3,23 @@
 
 #include "Board.h"
 #include <vector>
+#include <string>
 
-Corner* getOtherCorner(Edge* e, Corner* c);
-std::vector<Corner*> getSettlements(int number);
-std::vector<Port*> portsOwned(int player);
+using namespace std;
 
-bool isTwoAway(Corner* settlement);
-bool adjOwnRoad(Corner* settlement, int player);
-bool adjOwnProperty(Edge* road, int player);
+int getOtherCorner(int e, int c);
+vector<int> getSettlements(int number);
+vector<int> portsOwned(int player);
+
+bool isTwoAway(int settlement);
+bool adjOwnRoad(int settlement, int player);
+bool adjOwnProperty(int road, int player);
 
 void printBoard();
-void printStartRow(std::string (&out)[9], int row);
-void printRows(std::string (&out)[9]);
-void printTile(Tile *t, std::string (&out)[9], bool l, bool u, bool d, bool r);
-std::string color(int player);
-void printTileMiddle(Tile *t, std::string(&out)[9]);
+void printStartRow(string (&out)[9], int row);
+void printRows(string (&out)[9]);
+void printTile(int tile, string (&out)[9], bool l, bool u, bool d, bool r);
+string color(int player);
+void printTileMiddle(int tile, string(&out)[9]);
 
 #endif

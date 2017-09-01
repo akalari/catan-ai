@@ -108,6 +108,8 @@ class Corner {
    &vector<int> getAdjEdges();
    int getPort();
    void setPort(int trader);
+   int getSettlement();
+   void setSettlement(int color);
    int getIndex();
    void setIndex(int ind);
    Corner();

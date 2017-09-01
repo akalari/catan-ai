@@ -46,6 +46,8 @@ Corner::Corner():
 &vector<int> Corner::getAdjEdges() { return &adjEdges<int>; }
 int Corner::getPort() { return adjPort; }
 void Corner::setPort(int trader) { trader = adjPort; }
+int Corner::getSettlement() { return settlement; }
+void Corner::setSettlement(int color) { settlement = color; }
 int Corner::getIndex() { return index; }
 int Corner::setIndex() { index = ind; }
 

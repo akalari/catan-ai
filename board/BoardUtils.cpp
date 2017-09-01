@@ -2,17 +2,23 @@
 #include "Board.h"
 
 #include <iostream>
+#include <string>
+#include <vector>
+
+using namespace std;
 
 extern Tile tiles[NUM_TILES];
 extern Corner corners[NUM_TILES];
+extern Edge edges[NUM_EDGES];
+extern Port ports[NUM_PORTS];
 
 /**
  * Returns the corner connected to the edge
  * that is not *c
  */
-Corner* getOtherCorner(Edge* e, Corner* c) {
-    Corner* front = e->adjCorners.front();
-    if (front == c) return e->adjCorners.back();
+int getOtherCorner(int e, int c) {
+    int front = e.getAdjCorners().front();
+    if (front == c) return e.getAdjCorners().back();
     else return front;
 }
 
@@ -20,10 +26,10 @@ Corner* getOtherCorner(Edge* e, Corner* c) {
  * Returns a list of tiles with a certain number
  * If the tile has the robber, it isn't included
  */
-std::vector<Tile*> getTiles(int num) {
-    std::vector<Tile*> matches;
-    for(Tile &t:tiles) {
-        if(t.num == num && !t.robber)
+vector<int> getTiles(int num) {
+    vector<int> matches;
+    for(Tile &t : tiles) {
+        if(t.num == num && !t.getRobber)
             matches.push_back(&t);
     }
 }
@@ -32,22 +38,22 @@ std::vector<Tile*> getTiles(int num) {
  * Returns the list of occupied settlements adjacent
  * to a tile
  */
-std::vector<Corner*> getSettlements(Tile *t) {
-    std::vector<Corner*> matches;
-    for (Corner *c : t->adjCorners)
-        if (c->settlement != Corner::NO_SETTLEMENT) matches.push_back(c);
+vector<int> getSettlements(int tile) {
+    vector<int> matches;
+    for (int c : tiles[tile].getAdjCorners())
+      if (corners[c].getSettlement() != Corner::NO_SETTLEMENT)
+        matches.push_back(c);
     return matches;
 }
 
 /**
  * Returns a list of all of the ports owned by a player
  */
-std::vector<Port*> portsOwned(int player) {
-    std::vector<Port*> ports;
-    for(Corner &c:corners) {
-        if(c.settlement == player &&
-                c.adjPort != 0)
-            ports.push_back(c.adjPort);
+vector<int> portsOwned(int player) {
+    vector<int> ports;
+    for(Corner &c : corners) {
+      if(c.getSettlement() == player && c.getPort() != 0)
+        ports.push_back(c.getPort().getIndex());
     }
     return ports;
 }
@@ -56,37 +62,39 @@ std::vector<Port*> portsOwned(int player) {
  * Checks if a settlement (or settlement spot)
  * is >= 2 spots away from other settlements
  */
-bool isTwoAway(Corner* settlement) {
-    // Check all adjacent edges
-    for (Edge *e : settlement->adjEdges) {
-        Corner* c = getOtherCorner(e, settlement);
-        // If there is a settlement, return false
-        if (c->settlement != Corner::NO_SETTLEMENT) return false;
-    }
-    return true;
+bool isTwoAway(int settlement) {
+  // Check all adjacent edges
+  for (int e : corners[settlement].getAdjEdges()) {
+    int c = getOtherCorner(e, settlement);
+    // If there is a settlement, return false
+    if (corners[c].getSettlement() != Corner::NO_SETTLEMENT)
+      return false;
+  }
+  return true;
 }
 
 /**
  * Checks if a new settlement is adjacent to a road
  * occupied by the player
  */
-bool adjOwnRoad(Corner* settlement, int player) {
-    for (Edge *e : settlement->adjEdges) {
-        if(e->road != Edge::NONE && e->road == player) return true;
-    }
-    return false;
+bool adjOwnRoad(int settlement, int player) {
+  for (int e : corners[settlement].getAdjEdges()) {
+    if(edges[e].getRoad() != Edge::NONE && edges[e].getRoad() == player)
+      return true;
+  }
+  return false;
 }
 
 /**
  * Checks if a new road is adjacent to a road or settlement occupied
  * by the player
  */
-bool adjOwnProperty(Edge* road, int player) {
-  for (Corner* c : road->adjCorners) {
-    if (c->settlement == player)
+bool adjOwnProperty(int road, int player) {
+  for (int c : edges[road].getAdjCorners()) {
+    if (corners[c].getSettlement() == player)
       return true;
-    for (Edge* e : c->adjEdges)
-      if (e->road == player && e != road)
+    for (int e : corners[c].getAdjEdges())
+      if (edges[e].getRoad() == player && e != road)
         return true;
   }
   return false;
@@ -98,8 +106,8 @@ bool adjOwnProperty(Edge* road, int player) {
  * (see printTile() for more details)
  */
 void printBoard() {
-    std::cout << std::endl << color(-2) << std::endl;
-    std::string out[9];
+    cout << endl << color(-2) << endl;
+    string out[9];
     printStartRow(out, 0);
     printTile(&tiles[0], out, 1,1,0,1);
     printTile(&tiles[1], out, 0,1,0,1);
@@ -129,7 +137,7 @@ void printBoard() {
     printTile(&tiles[17], out, 0,0,1,1);
     printTile(&tiles[18], out, 0,0,1,1);
     printRows(out);
-    std::cout << std::endl << color(0) << std::endl;
+    cout << endl << color(0) << endl;
 }
 
 /**
@@ -138,7 +146,7 @@ void printBoard() {
  *
  * Spaces are appended to each string in out[]
  */
-void printStartRow(std::string (&out)[9], int row) {
+void printStartRow(string (&out)[9], int row) {
     int s = 2;
     if(row != 2)s += 7;
     if(row == 0 || row == 4)s += 7;
@@ -154,12 +162,12 @@ void printStartRow(std::string (&out)[9], int row) {
  *
  * The strings in the out[] are cleared following printing
  */
-void printRows(std::string (&out)[9]) {
+void printRows(string (&out)[9]) {
     for(int s=0; s < 9; s++){
         // Lines with less than 20 characters shouldn't be printed,
         // as they are left empty due to overlap between tiles
         if(out[s].length() > 20)
-            std::cout << out[s] << std::endl;
+            cout << out[s] << endl;
         // Clear string
         out[s].clear();
     }
@@ -169,16 +177,16 @@ void printRows(std::string (&out)[9]) {
  * Returns the color associated with a road,
  * at t[r], in ANSI escape string format
  */
-std::string roadColor(Tile *t, int r) {
-    return color(t->adjEdges[r]->road);
+string roadColor(int tile, int r) {
+  return color(tile.getAdjEdges()[r].getRoad());
 }
 
 /**
  * Returns the color associated with a settlement,
  * at t[c], in ANSI escape string format
  */
-std::string settColor(Tile *t, int c) {
-    return color(t->adjCorners[c]->settlement);
+string settColor(int tile, int c) {
+  return color(tile.getAdjCorners()[c].getSettlement());
 }
 
 
@@ -194,57 +202,57 @@ std::string settColor(Tile *t, int c) {
  *    l r
  *     d
  */
-void printTile(Tile *t, std::string (&out)[9], bool l, bool u, bool d, bool r) {
-    std::string s13(13, ' ');
-    std::string s9(9, ' ');
-    std::string s6(6, ' ');
-    std::string s5(5, ' ');
-    std::string s4(4, ' ');
-    std::string s3(3, ' ');
-    std::string s2(2, ' ');
-    std::string s(1, ' ');
-    std::string clr = color(-2);
+void printTile(int tile, string (&out)[9], bool l, bool u, bool d, bool r) {
+    string s13(13, ' ');
+    string s9(9, ' ');
+    string s6(6, ' ');
+    string s5(5, ' ');
+    string s4(4, ' ');
+    string s3(3, ' ');
+    string s2(2, ' ');
+    string s(1, ' ');
+    string clr = color(-2);
 
     if(l && u) {
         out[0] += s;
         out[1] += s;
-        out[2] += settColor(t,5) + "S" + clr;
+        out[2] += settColor(tiles[tile],5) + "S" + clr;
     } if(l) {
-        std::string cr5 = roadColor(t,5);
+        string cr5 = roadColor(tiles[tile],5);
         out[3] += cr5 + "|" + clr;
-         out[4] += cr5 + "|" + clr;
+        out[4] += cr5 + "|" + clr;
         out[5] += cr5 + "|" + clr;
     } if(l && d) {
-        out[6] += settColor(t,4) + "S" + clr;
+        out[6] += settColor(tiles[tile],4) + "S" + clr;
         out[7] += s;
         out[8] += s;
     }
     if(u) {
-        out[0] += s4 + roadColor(t,0) + "_ " +
-            settColor(t,0) + "S" + roadColor(t,1) + " _" + s4 + clr;
-        out[1] += s + roadColor(t,0) + "_--" + s5 + roadColor(t,1) + "--_" + s + clr;
+        out[0] += s4 + roadColor(tiles[tile],0) + "_ " +
+            settColor(tiles[tile],0) + "S" + roadColor(tiles[tile],1) + " _" + s4 + clr;
+        out[1] += s + roadColor(tiles[tile],0) + "_--" + s5 + roadColor(tiles[tile],1) + "--_" + s + clr;
         out[2] += s13;
     }
 
-    printTileMiddle(t, out);
+    printTileMiddle(tiles[tile], out);
 
     if(d) {
-        out[6] += s + roadColor(t,4) + "_" + s9 + roadColor(t,3) + "_" + s + clr;
-        out[7] += s2 + roadColor(t,4) + "--_" + s3 + roadColor(t,3) + "_--" + s2 + clr;
-        out[8] += s6 + settColor(t,3) + "S" + s6 + clr;
+        out[6] += s + roadColor(tiles[tile],4) + "_" + s9 + roadColor(tiles[tile],3) + "_" + s + clr;
+        out[7] += s2 + roadColor(tiles[tile],4) + "--_" + s3 + roadColor(tiles[tile],3) + "_--" + s2 + clr;
+        out[8] += s6 + settColor(tiles[tile],3) + "S" + s6 + clr;
     }
 
     if(r && u) {
         out[0] += s;
         out[1] += s;
-        out[2] += settColor(t,1) + "S" + clr;
+        out[2] += settColor(tiles[tile],1) + "S" + clr;
     } if(r) {
-        std::string cr2 = roadColor(t,2);
+        string cr2 = roadColor(tiles[tile],2);
         out[3] += cr2 + "|" + clr;
         out[4] += cr2 + "|" + clr;
         out[5] += cr2 + "|" + clr;
     } if(r && d) {
-        out[6] += settColor(t,2) + "S" + clr;
+        out[6] += settColor(tiles[tile],2) + "S" + clr;
         out[7] += s;
         out[8] += s;
     }
@@ -254,7 +262,7 @@ void printTile(Tile *t, std::string (&out)[9], bool l, bool u, bool d, bool r) {
 * Returns the ANSI escape code string to print
 * the color associated with each player
 */
-std::string color(int player) {
+string color(int player) {
     switch(player) {
         case 1: // Red
             return "\033[31;1m";
@@ -275,19 +283,19 @@ std::string color(int player) {
  * Prints ASCII art representing the middle of each tile
  * depending on the tile's resource type
  */
-void printTileMiddle(Tile *t, std::string (&out)[9]) {
-    std::string clr = color(0);
-    std::string red = "\033[31m";
-    std::string green = "\033[32m";
-    std::string yellow = "\033[33m";
-    std::string grey = "\033[30;1m";
+void printTileMiddle(int tile, string (&out)[9]) {
+    string clr = color(0);
+    string red = "\033[31m";
+    string green = "\033[32m";
+    string yellow = "\033[33m";
+    string grey = "\033[30;1m";
 
     char buff[10];
-    sprintf(buff, "%02d", t->num);
-    std::string n = buff;
+    sprintf(buff, "%02d", tiles[tile].getNum());
+    string n = buff;
 
 
-    switch(t->resource) {
+    switch(tiles[tile].getResource()) {
         case 0:
             out[3] += red + "___|___|___|_" + clr;
             out[4] += red + "_|___" + n + "__|___" + clr;
