@@ -11,19 +11,19 @@ Edge edges[NUM_EDGES];
 Port ports[NUM_PORTS];
 
 Tile::Tile():
-    adjCorners {0, 0, 0, 0, 0, 0},
-    adjEdges {0, 0, 0, 0, 0, 0},
-    robber(false), num(-1), resource(-1)
+    adjCorners {-1, -1, -1, -1, -1, -1},
+    adjEdges {-1, -1, -1, -1, -1, -1},
+    robber(false), num(-1), resource(-1), index(-1)
 {}
 
-&int[6] Tile::getAdjCorners() { return &adjCorners[6]; }
-&int[6] Tile::getAdjEdges() { return &adjEdges[6]; }
+int (&Tile::getAdjCorners())[6] { return adjCorners; }
+int (&Tile::getAdjEdges())[6] { return adjEdges; }
 int Tile::getNum() { return num; }
 void Tile::setNum(int n) { num = n; }
 int Tile::getResource() { return resource; }
 void Tile::setResource(int res) { resource = res; }
 int Tile::getIndex() { return index; }
-int Tile::setIndex(int ind) { index = ind; }
+void Tile::setIndex(int ind) { index = ind; }
 bool Tile::getRobber() { return robber; }
 void Tile::setRobber(bool robberStatus) { robber = robberStatus; }
 
@@ -31,28 +31,28 @@ Edge::Edge():
     road(Edge::NONE)
 {}
 
-&vector<int> Edge::getAdjCorners() { return &adjCorners<int>; }
+vector<int> &Edge::getAdjCorners() { return adjCorners; }
 int Edge::getRoad() { return road; }
 void Edge::setRoad(int color) { road = color; }
 int Edge::getIndex() { return index; }
-int Edge::setIndex(int ind) { index = ind; }
+void Edge::setIndex(int ind) { index = ind; }
 
 Corner::Corner():
     settlement(Corner::NO_SETTLEMENT),
     adjPort(0)
 {}
 
-&vector<int> Corner::getAdjTiles() { return &adjTiles<int>; }
-&vector<int> Corner::getAdjEdges() { return &adjEdges<int>; }
+vector<int> &Corner::getAdjTiles() { return adjTiles; }
+vector<int> &Corner::getAdjEdges() { return adjEdges; }
 int Corner::getPort() { return adjPort; }
 void Corner::setPort(int trader) { trader = adjPort; }
 int Corner::getIndex() { return index; }
-int Corner::setIndex() { index = ind; }
+void Corner::setIndex(int ind) { index = ind; }
 
 Port::Port():
     adjCorners {0, 0},
     resource(-1),
-    terms(4)
+   terms(4) 
 {}
 
 Port::Port(int r, int t):
@@ -61,13 +61,13 @@ Port::Port(int r, int t):
   terms(t)
 {}
 
-&int[2] Port::getAdjCorners() { return &adjCorners[2]; }
+int (&Port::getAdjCorners())[2] { return adjCorners; }
 int Port::getResource() { return resource; }
 void Port::setResource(int res) { resource = res; }
 int Port::getTerms() { return terms; }
 void Port::setTerms(int tms) { terms = tms; }
 int Port::getIndex() { return index; }
-void Port::setIndex() { index = ind; }
+void Port::setIndex(int ind) { index = ind; }
 
 /**
  * Assigns relations between tiles, edges, and corners
@@ -104,13 +104,16 @@ void initEdges() {
             // If this is an unshared edge, create a new instance
             if(a == -1){
                 edges[nextEdge] = Edge();
-                tile.adjEdges[e] = &edges[nextEdge++];
+                edges[nextEdge].setIndex(nextEdge);
+                tile.getAdjEdges()[e] = nextEdge;
+                nextEdge++;
             } // If this is a null shared edge, create a new instance
-            else if(tile.adjEdges[e] == 0){
+            else if(tile.getAdjEdges()[e] == 0){
                 edges[nextEdge] = Edge();
-                tile.adjEdges[e] = &edges[nextEdge];
+                edges[nextEdge].setIndex(nextEdge);
+                tile.getAdjEdges()[e] = nextEdge;
                 // Assign this object to the adjacent tile
-                tiles[a].adjEdges[(e+3)%6] = &edges[nextEdge];
+                tiles[a].getAdjEdges()[(e+3)%6] = nextEdge;
                 nextEdge++;
             }
         }
@@ -124,13 +127,15 @@ void initCorners() {
     int nextCorner = 0;
     // Loop through all the tiles
     for (int t = 0; t < NUM_TILES; t++) {
+        
         Tile &tile = tiles[t];
         //Loop through all the corners, with indexes of x.5
         for(double c = 0.5; c < 6; c += 1) {
             // If this corner already exists, skip
-            if(tile.adjCorners[int(c)] != 0) continue;
+            if(tile.getAdjCorners()[int(c)] != 0) continue;
             // Create new Corner instance and add to list
-            Corner &corner = corners[nextCorner++] = Corner();
+            Corner &corner = corners[nextCorner] = Corner();
+            corner.setIndex(nextCorner);
 
             int lEdge = int(c-0.5); // Index of edge counter-clockwise of corner
             int rEdge = int(c+0.5)%6; // Index of edge clockwise of corner
@@ -138,30 +143,35 @@ void initCorners() {
             int adjTA = TILE_ADJACENCIES[t][lEdge]; // Tile adjacent at lEdge
             int adjTB = TILE_ADJACENCIES[t][rEdge]; // Tile adjacent at rEdge
 
-            corner.adjTiles.push_back(&tile); // Add tile to corner's adjacent tiles
-            tile.adjCorners[int(c)] = &corner; // Add corner to tile's list
-            Edge *thirdEdge = 0; // Temporarily store the third edge, if it exists
+            corner.getAdjTiles().push_back(t); // Add tile to corner's adjacent tiles
+            tile.getAdjCorners()[int(c)] = nextCorner; // Add corner to tile's list
+
+            int thirdEdge = -1; // Temporarily store the third edge, if it exists
 
             if(adjTA != -1) { // If there is an adjacent tile at lEdge
-                corner.adjTiles.push_back(&tiles[adjTA]); // Add adj tile to corner
-                tiles[adjTA].adjCorners[int(c+2)%6] = &corner; // Add corner to adj tile
-                thirdEdge = tiles[adjTA].adjEdges[(lEdge + 2)%6]; // Get third edge from adjTA
+                corner.getAdjTiles().push_back(adjTA); // Add adj tile to corner
+                tiles[adjTA].getAdjCorners()[int(c+2)%6] = nextCorner; // Add corner to adj tile
+                thirdEdge = tiles[adjTA].getAdjEdges()[(lEdge + 2)%6]; // Get third edge from adjTA
             }
             if(adjTB != -1) { // If there is an adjacent tile at rEdge
-                 corner.adjTiles.push_back(&tiles[adjTB]); // Add adj tile to corner
-                 tiles[adjTB].adjCorners[int(c+4)%6] = &corner; // Add corner to adj tile
-                 thirdEdge = tiles[adjTB].adjEdges[(rEdge + 4)%6]; // Get third edge from adjTB
+                 corner.getAdjTiles().push_back(adjTB); // Add adj tile to corner
+                 tiles[adjTB].getAdjCorners()[int(c+4)%6] = nextCorner; // Add corner to adj tile
+                 thirdEdge = tiles[adjTB].getAdjEdges()[(rEdge + 4)%6]; // Get third edge from adjTB
             }
 
             // Add adjacent edges to corner, and add corner to edges
-            corner.adjEdges.push_back(tile.adjEdges[lEdge]);
-            tile.adjEdges[lEdge]->adjCorners.push_back(&corner);
-            corner.adjEdges.push_back(tile.adjEdges[rEdge]);
-            tile.adjEdges[rEdge]->adjCorners.push_back(&corner);
+            corner.getAdjEdges().push_back(lEdge);
+            int el = tile.getAdjEdges()[lEdge];
+            edges[el].getAdjCorners().push_back(nextCorner);
+            corner.getAdjEdges().push_back(rEdge);
+            int er = tile.getAdjEdges()[rEdge];
+            edges[er].getAdjCorners().push_back(nextCorner);
             if(thirdEdge != 0) {
-                corner.adjEdges.push_back(thirdEdge);
-                thirdEdge->adjCorners.push_back(&corner);
+                corner.getAdjEdges().push_back(thirdEdge);
+                edges[thirdEdge].getAdjCorners().push_back(nextCorner);
             }
+
+            nextCorner++;
         }
     }
 }
@@ -174,12 +184,14 @@ void initPorts() {
         int i[4];
         std::copy(std::begin(BOARD_PORTS[p]), std::end(BOARD_PORTS[p]), std::begin(i));
         Tile &t = tiles[i[0]];
-        Edge* e = t.adjEdges[i[1]];
+        int e = t.getAdjEdges()[i[1]];
+        Edge& edge = edges[e];
         ports[p] = Port(i[2], i[3]);
+        ports[p].setIndex(p);
 
         for(int c = 0; c < 2; c++) {
-            ports[p].adjCorners[c] = e->adjCorners.at(c);
-            e->adjCorners.at(c)->adjPort = &ports[p];
+            ports[p].getAdjCorners()[c] = edge.getAdjCorners().at(c);
+            corners[edge.getAdjCorners().at(c)].setPort(p);
         }
 
     }
