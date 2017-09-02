@@ -134,9 +134,43 @@ class Port {
    Port(int r, int t);
 };
 
-void initBoard();
-void initTiles();
-void initEdges();
-void initCorners();
+class Board {
+    private:
+        Tile tiles[NUM_TILES];
+        Edge edges[NUM_EDGES];
+        Corner corners[NUM_CORNERS];
+        Port ports[NUM_PORTS];
+        void initBoard();
+        void initTiles();
+        void initEdges();
+        void initCorners();
+        void initPorts();
+
+        // board utils
+        int getOtherCorner(int e, int c);
+        vector<int> getMatchingTiles(int num);
+        vector<int> getSettlements(int number);
+        vector<int> portsOwned(int player);
+        bool isTwoAway(int settlement);
+        bool adjOwnRoad(int settlement, int player);
+        bool adjOwnProperty(int road, int player);
+
+        // printBoard() helper methods
+        void printStartRow(string (&out)[9], int row);
+        void printRows(string (&out)[9]);
+        void printTile(int tile, string (&out)[9], bool l, bool u, bool d, bool r);
+        string printColor(int player);
+        void printTileMiddle(int tile, string(&out)[9]);
+        string roadColor(int tile, int r);
+        string settColor(int tile, int c);
+    public:
+        Board();
+        Tile (&getTiles())[NUM_TILES];
+        Edge (&getEdges())[NUM_EDGES];
+        Corner (&getCorners())[NUM_CORNERS];
+        Port (&getPorts())[NUM_PORTS];
+
+        void printBoard();
+};
 
 #endif

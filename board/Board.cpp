@@ -5,11 +5,6 @@
 
 using namespace std;
 
-Tile tiles[NUM_TILES];
-Corner corners[NUM_CORNERS];
-Edge edges[NUM_EDGES];
-Port ports[NUM_PORTS];
-
 Tile::Tile():
     adjCorners {-1, -1, -1, -1, -1, -1},
     adjEdges {-1, -1, -1, -1, -1, -1},
@@ -71,11 +66,17 @@ void Port::setTerms(int tms) { terms = tms; }
 int Port::getIndex() { return index; }
 void Port::setIndex(int ind) { index = ind; }
 
+Board::Board() { this->initBoard(); }
+Tile (&Board::getTiles())[NUM_TILES] { return tiles; }
+Edge (&Board::getEdges())[NUM_EDGES] { return edges; }
+Corner (&Board::getCorners())[NUM_CORNERS] { return corners; }
+Port (&Board::getPorts())[NUM_PORTS] { return ports; }
+
 /**
  * Assigns relations between tiles, edges, and corners
  * Populates pointer arrays in each class
  */
-void initBoard() {
+void Board::initBoard() {
     initTiles();
     initEdges();
     initCorners();
@@ -84,7 +85,7 @@ void initBoard() {
 /**
  * Initialize board tiles
  */
-void initTiles() {
+void Board::initTiles() {
     for(int t = 0; t < NUM_TILES; t++) {
         tiles[t] = Tile();
     }
@@ -93,7 +94,7 @@ void initTiles() {
 /**
  * Initialize board edges
  */
-void initEdges() {
+void Board::initEdges() {
     int nextEdge = 0;
     // Loop through each tile on the board
     for(int t = 0; t < NUM_TILES; t++) {
@@ -125,7 +126,7 @@ void initEdges() {
 /**
  * Set up board corners
  */
-void initCorners() {
+void Board::initCorners() {
     int nextCorner = 0;
     // Loop through all the tiles
     for (int t = 0; t < NUM_TILES; t++) {
@@ -181,7 +182,7 @@ void initCorners() {
 /**
  * Set up board ports
  */
-void initPorts() {
+void Board::initPorts() {
     for(int p = 0; p < NUM_PORTS; p++) {
         int i[4];
         std::copy(std::begin(BOARD_PORTS[p]), std::end(BOARD_PORTS[p]), std::begin(i));

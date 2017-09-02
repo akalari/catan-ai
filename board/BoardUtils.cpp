@@ -1,22 +1,16 @@
-#include "BoardUtils.h"
-#include "Board.h"
-
 #include <iostream>
 #include <string>
 #include <vector>
 
-using namespace std;
+#include "Board.h"
 
-extern Tile tiles[NUM_TILES];
-extern Corner corners[NUM_TILES];
-extern Edge edges[NUM_EDGES];
-extern Port ports[NUM_PORTS];
+using namespace std;
 
 /**
  * Returns the corner connected to the edge
  * that is not *c
  */
-int getOtherCorner(int e, int c) {
+int Board::getOtherCorner(int e, int c) {
     int front = edges[e].getAdjCorners().front();
     if (front == c) return edges[e].getAdjCorners().back();
     else return front;
@@ -26,7 +20,7 @@ int getOtherCorner(int e, int c) {
  * Returns a list of tiles with a certain number
  * If the tile has the robber, it isn't included
  */
-vector<int> getTiles(int num) {
+vector<int> Board::getMatchingTiles(int num) {
     vector<int> matches;
     for(int i = 0; i < NUM_TILES; i++) {
         if(tiles[i].getNum() == num && !tiles[i].getRobber())
@@ -39,7 +33,7 @@ vector<int> getTiles(int num) {
  * Returns the list of occupied settlements adjacent
  * to a tile
  */
-vector<int> getSettlements(int tile) {
+vector<int> Board::getSettlements(int tile) { 
     vector<int> matches;
     for (int c : tiles[tile].getAdjCorners())
       if (corners[c].getSettlement() != Corner::NO_SETTLEMENT)
@@ -50,7 +44,7 @@ vector<int> getSettlements(int tile) {
 /**
  * Returns a list of all of the ports owned by a player
  */
-vector<int> portsOwned(int player) {
+vector<int> Board::portsOwned(int player) {
     vector<int> ports;
     for(Corner &c : corners) {
       if(c.getSettlement() == player && c.getPort() != 0)
@@ -63,7 +57,7 @@ vector<int> portsOwned(int player) {
  * Checks if a settlement (or settlement spot)
  * is >= 2 spots away from other settlements
  */
-bool isTwoAway(int settlement) {
+bool Board::isTwoAway(int settlement) {
   // Check all adjacent edges
   for (int e : corners[settlement].getAdjEdges()) {
     int c = getOtherCorner(e, settlement);
@@ -78,7 +72,7 @@ bool isTwoAway(int settlement) {
  * Checks if a new settlement is adjacent to a road
  * occupied by the player
  */
-bool adjOwnRoad(int settlement, int player) {
+bool Board::adjOwnRoad(int settlement, int player) {
   for (int e : corners[settlement].getAdjEdges()) {
     if(edges[e].getRoad() != Edge::NONE && edges[e].getRoad() == player)
       return true;
@@ -90,7 +84,7 @@ bool adjOwnRoad(int settlement, int player) {
  * Checks if a new road is adjacent to a road or settlement occupied
  * by the player
  */
-bool adjOwnProperty(int road, int player) {
+bool Board::adjOwnProperty(int road, int player) {
   for (int c : edges[road].getAdjCorners()) {
     if (corners[c].getSettlement() == player)
       return true;
@@ -106,8 +100,8 @@ bool adjOwnProperty(int road, int player) {
  * Different segments of each tile are printed, based on its location
  * (see printTile() for more details)
  */
-void printBoard() {
-    cout << endl << color(-2) << endl;
+void Board::printBoard() {
+    cout << endl << printColor(-2) << endl;
     string out[9];
     printStartRow(out, 0);
     printTile(0, out, 1,1,0,1);
@@ -138,7 +132,7 @@ void printBoard() {
     printTile(17, out, 0,0,1,1);
     printTile(18, out, 0,0,1,1);
     printRows(out);
-    cout << endl << color(-1) << endl;
+    cout << endl << printColor(-1) << endl;
 }
 
 /**
@@ -147,7 +141,7 @@ void printBoard() {
  *
  * Spaces are appended to each string in out[]
  */
-void printStartRow(string (&out)[9], int row) {
+void Board::printStartRow(string (&out)[9], int row) {
     int s = 2;
     if(row != 2)s += 7;
     if(row == 0 || row == 4)s += 7;
@@ -163,7 +157,7 @@ void printStartRow(string (&out)[9], int row) {
  *
  * The strings in the out[] are cleared following printing
  */
-void printRows(string (&out)[9]) {
+void Board::printRows(string (&out)[9]) {
     for(int s=0; s < 9; s++){
         // Lines with less than 20 characters shouldn't be printed,
         // as they are left empty due to overlap between tiles
@@ -178,16 +172,16 @@ void printRows(string (&out)[9]) {
  * Returns the color associated with a road,
  * at t[r], in ANSI escape string format
  */
-string roadColor(int tile, int r) {
-  return color(edges[tiles[tile].getAdjEdges()[r]].getRoad());
+string Board::roadColor(int tile, int r) {
+  return printColor(edges[tiles[tile].getAdjEdges()[r]].getRoad());
 }
 
 /**
  * Returns the color associated with a settlement,
  * at t[c], in ANSI escape string format
  */
-string settColor(int tile, int c) {
-  return color(corners[tiles[tile].getAdjCorners()[c]].getSettlement());
+string Board::settColor(int tile, int c) {
+  return printColor(corners[tiles[tile].getAdjCorners()[c]].getSettlement());
 }
 
 
@@ -203,7 +197,7 @@ string settColor(int tile, int c) {
  *    l r
  *     d
  */
-void printTile(int tile, string (&out)[9], bool l, bool u, bool d, bool r) {
+void Board::printTile(int tile, string (&out)[9], bool l, bool u, bool d, bool r) {
     string s13(13, ' ');
     string s9(9, ' ');
     string s6(6, ' ');
@@ -212,7 +206,7 @@ void printTile(int tile, string (&out)[9], bool l, bool u, bool d, bool r) {
     string s3(3, ' ');
     string s2(2, ' ');
     string s(1, ' ');
-    string clr = color(-2);
+    string clr = printColor(-2);
 
     if(l && u) {
         out[0] += s;
@@ -263,7 +257,7 @@ void printTile(int tile, string (&out)[9], bool l, bool u, bool d, bool r) {
 * Returns the ANSI escape code string to print
 * the color associated with each player
 */
-string color(int player) {
+string Board::printColor(int player) {
     switch(player) {
         case 0: // Red
             return "\033[31;1m";
@@ -284,8 +278,8 @@ string color(int player) {
  * Prints ASCII art representing the middle of each tile
  * depending on the tile's resource type
  */
-void printTileMiddle(int tile, string (&out)[9]) {
-    string clr = color(-2);
+void Board::printTileMiddle(int tile, string (&out)[9]) {
+    string clr = printColor(-2);
     string red = "\033[31m";
     string green = "\033[32m";
     string yellow = "\033[33m";

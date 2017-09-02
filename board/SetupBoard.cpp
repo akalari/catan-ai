@@ -5,7 +5,6 @@
 
 #include "SetupBoard.h"
 #include "Board.h"
-#include "BoardUtils.h"
 #include "../elements/Elements.h"
 
 extern Tile tiles[NUM_TILES];
@@ -15,9 +14,9 @@ extern Corner corners[NUM_CORNERS];
 /**
  * Loads user-input tile data into the Board
  */
-void loadBoard(char tc[NUM_TILES], int ti[NUM_TILES]) {
+void loadBoard(Board &b, char tc[NUM_TILES], int ti[NUM_TILES]) {
     for(int t = 0; t < NUM_TILES; t++) {
-        Tile &tile = tiles[t];
+        Tile &tile = b.getTiles()[t];
         tile.setResource(getElement(tc[t]));
         tile.setNum(ti[t]);
         tile.setIndex(t);
@@ -25,25 +24,10 @@ void loadBoard(char tc[NUM_TILES], int ti[NUM_TILES]) {
 }
 
 /**
- * Return the element linked to the user-input char
- */
-int getElement(char tc) {
-    switch(tc) {
-        case 'b': return BRICK;
-        case 'l': return LUMBER;
-        case 'w': return WOOL;
-        case 'g': return GRAIN;
-        case 'o': return ORE;
-        case 'd': return -1; // Desert
-        default: return -2;
-    }
-}
-
-/**
  * Generates the board by randomly shuffling tiles
  * Uses the possibilitiesSpiral that is provided
  */
-void randomBoard(const int possibilitiesSpiral[18]) {
+void randomBoard(Board &b, const int possibilitiesSpiral[18]) {
     std::array<char,19> tc {'b','b','b','o','o','o','l','l','l','l',
         'w','w','w','w','g','g','g','g','d'};
     int ti[NUM_TILES] {0};
@@ -58,13 +42,13 @@ void randomBoard(const int possibilitiesSpiral[18]) {
       ti[TILES_SPIRAL[i]] = possibilitiesSpiral[c++];
     }
 
-    loadBoard(tc.data(), ti);
+    loadBoard(b, tc.data(), ti);
 }
 
 /**
  * Allows the user to input the values for the board resources and probabilities
  */
-void inputBoard() {
+void inputBoard(Board &b) {
  char tc[NUM_TILES] = {0};
   int ti[NUM_TILES] {0};
 
@@ -74,13 +58,13 @@ void inputBoard() {
     std::cin >> tc[i] >> ti[i];
   }
 
-  loadBoard(tc, ti);
+  loadBoard(b, tc, ti);
 }
 
 /**
  * Allows the user to input the values for the board resources only
  */
-void inputBoard(const int possibilitiesSpiral[18]) {
+void inputBoard(Board &b, const int possibilitiesSpiral[18]) {
   char tc[NUM_TILES] = {0};
   int ti[NUM_TILES] {0};
 
@@ -97,7 +81,22 @@ void inputBoard(const int possibilitiesSpiral[18]) {
       ti[TILES_SPIRAL[i]] = possibilitiesSpiral[c++];
   }
 
-  loadBoard(tc, ti);
+  loadBoard(b, tc, ti);
+}
+
+/**
+ * Return the element linked to the user-input char
+ */
+int getElement(char tc) {
+    switch(tc) {
+        case 'b': return BRICK;
+        case 'l': return LUMBER;
+        case 'w': return WOOL;
+        case 'g': return GRAIN;
+        case 'o': return ORE;
+        case 'd': return -1; // Desert
+        default: return -2;
+    }
 }
 
 /**
