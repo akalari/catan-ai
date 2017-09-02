@@ -138,7 +138,7 @@ void printBoard() {
     printTile(17, out, 0,0,1,1);
     printTile(18, out, 0,0,1,1);
     printRows(out);
-    cout << endl << color(0) << endl;
+    cout << endl << color(-1) << endl;
 }
 
 /**
@@ -265,13 +265,13 @@ void printTile(int tile, string (&out)[9], bool l, bool u, bool d, bool r) {
 */
 string color(int player) {
     switch(player) {
-        case 1: // Red
+        case 0: // Red
             return "\033[31;1m";
-        case 2: // Blue
+        case 1: // Blue
             return "\033[36;1m";
-        case 3: // White
+        case 2: // White
             return "\033[37;1m";
-        case 4: // Orange (yellow)
+        case 3: // Orange (yellow)
             return "\033[33;1m";
         case -2: // Magenta (neutral)
             return "\033[0m\033[35m";
@@ -285,7 +285,7 @@ string color(int player) {
  * depending on the tile's resource type
  */
 void printTileMiddle(int tile, string (&out)[9]) {
-    string clr = color(0);
+    string clr = color(-2);
     string red = "\033[31m";
     string green = "\033[32m";
     string yellow = "\033[33m";
@@ -297,27 +297,27 @@ void printTileMiddle(int tile, string (&out)[9]) {
 
 
     switch(tiles[tile].getResource()) {
-        case 0:
+        case BRICK:
             out[3] += red + "___|___|___|_" + clr;
             out[4] += red + "_|___" + n + "__|___" + clr;
             out[5] += red + "___|___|___|_" + clr;
             return;
-        case 1:
+        case LUMBER:
             out[3] += green + " /\\ /\\    /\\ " + clr;
             out[4] += green + " /\\ /\\ " + n + " /\\ " + clr;
             out[5] += green + " || ||    || " + clr;
             return;
-        case 2:
+        case WOOL:
             out[3] += green + "  " + n + "   _--_  " + clr;
             out[4] += green + "  _--_-    -_" + clr;
             out[5] += green + "_-    -_     " + clr;
             return;
-        case 3:
+        case GRAIN:
             out[3] += yellow + "    \"        " + clr;
             out[4] += yellow + "   \\|/  " + n + "   " + clr;
             out[5] += yellow + "    |        " + clr;
             return;
-        case 4:
+        case ORE:
             out[3] += grey + "  /\\/\\ /\\    " + clr;
             out[4] += grey + " /  \\ /" + n + "\\   " + clr;
             out[5] += grey + "/    /    \\  " + clr;

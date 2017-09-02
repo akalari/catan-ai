@@ -110,7 +110,7 @@ void initEdges() {
                 tile.getAdjEdges()[e] = nextEdge;
                 nextEdge++;
             } // If this is a null shared edge, create a new instance
-            else if(tile.getAdjEdges()[e] == 0){
+            else if(tile.getAdjEdges()[e] == -1){
                 edges[nextEdge] = Edge();
                 edges[nextEdge].setIndex(nextEdge);
                 tile.getAdjEdges()[e] = nextEdge;
@@ -134,7 +134,7 @@ void initCorners() {
         //Loop through all the corners, with indexes of x.5
         for(double c = 0.5; c < 6; c += 1) {
             // If this corner already exists, skip
-            if(tile.getAdjCorners()[int(c)] != 0) continue;
+            if(tile.getAdjCorners()[int(c)] != -1) continue;
             // Create new Corner instance and add to list
             Corner &corner = corners[nextCorner] = Corner();
             corner.setIndex(nextCorner);
@@ -168,7 +168,7 @@ void initCorners() {
             corner.getAdjEdges().push_back(rEdge);
             int er = tile.getAdjEdges()[rEdge];
             edges[er].getAdjCorners().push_back(nextCorner);
-            if(thirdEdge != 0) {
+            if(thirdEdge != -1) {
                 corner.getAdjEdges().push_back(thirdEdge);
                 edges[thirdEdge].getAdjCorners().push_back(nextCorner);
             }
