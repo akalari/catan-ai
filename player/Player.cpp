@@ -10,11 +10,6 @@
 
 using namespace std;
 
-extern Tile tiles[NUM_TILES];
-extern Corner corners[NUM_CORNERS];
-extern Edge edges[NUM_EDGES];
-extern Port ports[NUM_PORTS];
-
 Player::Player (int c, string Color) {
   color = c;
   color_string = color;
