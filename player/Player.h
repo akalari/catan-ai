@@ -15,27 +15,28 @@ class Player {
   private:
     vector<int> resHand;
     vector<int> devHand;
-    int numRoads = 15;
-    int numSettlements = 5;
-    int numCities = 4;
-    int color = -1;
-    int score = 0;
-    string name = NULL;
+    int numRoads;
+    int numSettlements;
+    int numCities;
+    int color;
+    int score;
+    string name;
     string color_string;
   public:
-    void addResCard();
-    void takeResCard();
-    void addDevCard();
-    void takeDevCard();
-    void placeRoad();
-    void placeRoad(Edge e);
-    void placeSettlement();
-    void placeSettlement(Corner* c, bool isFirstSettlement);
-    void placeCity();
-    void placeCity(Corner* c);
+    void addResCard(int e);
+    bool takeResCard(int e);
+    void addDevCard(int e);
+    bool takeDevCard(int e);
+    void inputRoad();
+    void placeRoad(int e);
+    void inputSettlement(bool isFirstSettlement);
+    void placeSettlement(int c, bool isFirstSettlement);
+    void placeCity(int c);
+    void inputCity();
     string getName();
     int getScore();
-    Player () {}
+    string toString();
+    Player(int c, string string_color);
 };
 
 #endif
