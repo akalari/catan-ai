@@ -148,7 +148,6 @@ class Board {
 
         // board utils
         int getOtherCorner(int e, int c);
-        vector<int> getMatchingTiles(int num);
         vector<int> getSettlements(int number);
         vector<int> portsOwned(int player);
         bool isTwoAway(int settlement);
@@ -171,6 +170,9 @@ class Board {
         Port (&getPorts())[NUM_PORTS];
 
         void printBoard();
+        
+        //board utils
+        vector<int> getMatchingTiles(int num);
 };
 
 #endif
