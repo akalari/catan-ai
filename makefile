@@ -1,4 +1,4 @@
-CXXFLAGS = -std=c++11 -g
+CXXFLAGS = -std=c++14 -g
 CC = g++
 
 catan-board: board/Board.cpp board/SetupBoard.cpp
