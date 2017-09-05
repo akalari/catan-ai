@@ -13,11 +13,6 @@
 
 using namespace std;
 
-extern Tile tiles[NUM_TILES];
-extern Corner corners[NUM_CORNERS];
-extern Edge edges[NUM_EDGES];
-extern Port ports[NUM_PORTS];
-
 int main () {
 
   // Before gameplay starts

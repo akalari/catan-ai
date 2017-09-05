@@ -1,5 +1,5 @@
-CXXFLAGS = -std=c++11 -g
-CC = g++
+CXXFLAGS = -std=c++14 -g
+CC = clang++
 
 catan-board: board/Board.cpp board/SetupBoard.cpp
 	$(CC) $(CXXFLAGS) board/Board.cpp board/SetupBoard.cpp board/BoardUtils.cpp board/TestBoard.cpp -o bin/Board

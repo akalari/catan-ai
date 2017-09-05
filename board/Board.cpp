@@ -26,7 +26,7 @@ Edge::Edge():
     road(Edge::NONE)
 {}
 
-vector<int> &Edge::getAdjCorners() { return adjCorners; }
+vector<int> (&Edge::getAdjCorners()) { return adjCorners; }
 int Edge::getRoad() { return road; }
 void Edge::setRoad(int color) { road = color; }
 int Edge::getIndex() { return index; }
@@ -34,15 +34,18 @@ void Edge::setIndex(int ind) { index = ind; }
 
 Corner::Corner():
     settlement(Corner::NO_SETTLEMENT),
-    adjPort(0)
+    adjPort(0),
+    city(-1)
 {}
 
-vector<int> &Corner::getAdjTiles() { return adjTiles; }
-vector<int> &Corner::getAdjEdges() { return adjEdges; }
+vector<int> (&Corner::getAdjTiles()) { return adjTiles; }
+vector<int> (&Corner::getAdjEdges()) { return adjEdges; }
 int Corner::getPort() { return adjPort; }
 void Corner::setPort(int trader) { trader = adjPort; }
 int Corner::getSettlement() { return settlement; }
 void Corner::setSettlement(int color) { settlement = color; }
+int Corner::getCity() { return city; }
+void Corner::setCity(int color) { city = color; }
 int Corner::getIndex() { return index; }
 void Corner::setIndex(int ind) { index = ind; }
 
@@ -59,8 +62,8 @@ Port::Port(int r, int t):
 {}
 
 int (&Port::getAdjCorners())[2] { return adjCorners; }
-int Port::getResource() { return resource; }
-void Port::setResource(int res) { resource = res; }
+int (Port::getResource()) { return resource; }
+void (Port::setResource(int res)) { resource = res; }
 int Port::getTerms() { return terms; }
 void Port::setTerms(int tms) { terms = tms; }
 int Port::getIndex() { return index; }

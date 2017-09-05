@@ -7,9 +7,7 @@
 #include "Board.h"
 #include "../elements/Elements.h"
 
-extern Tile tiles[NUM_TILES];
-extern Edge edges[NUM_EDGES];
-extern Corner corners[NUM_CORNERS];
+using namespace std;
 
 /**
  * Loads user-input tile data into the Board
@@ -27,13 +25,13 @@ void loadBoard(Board &b, char tc[NUM_TILES], int ti[NUM_TILES]) {
  * Uses the possibilitiesSpiral that is provided
  */
 void randomBoard(Board &b, const int possibilitiesSpiral[18]) {
-    std::array<char,19> tc {'b','b','b','o','o','o','l','l','l','l',
+    array<char,19> tc {'b','b','b','o','o','o','l','l','l','l',
         'w','w','w','w','g','g','g','g','d'};
     int ti[NUM_TILES] {0};
 
-    std::random_device rng;
-    std::mt19937 urng(rng());
-    std::shuffle(tc.begin(), tc.end(), urng);
+    random_device rng;
+    mt19937 urng(rng());
+    shuffle(tc.begin(), tc.end(), urng);
 
     int c =0;
     for (int i = 0; i < NUM_TILES; i++) {
@@ -53,8 +51,8 @@ void inputBoard(Board &b) {
 
   for(int i = 0; i < NUM_TILES; i++) {
     printTiles(tc, ti);
-    std::cout << "Please specify tile " << i << ": [blwgod][1-12] -> ";
-    std::cin >> tc[i] >> ti[i];
+    cout << "Please specify tile " << i << ": [blwgod][1-12] -> ";
+    cin >> tc[i] >> ti[i];
   }
 
   loadBoard(b, tc, ti);
@@ -69,9 +67,9 @@ void inputBoard(Board &b, const int possibilitiesSpiral[18]) {
 
   for(int i = 0; i < NUM_TILES; i++) {
     printTiles(tc, ti);
-    std::cout << "Please specify tile " << i << ": [blwgod]-> ";
-    std::cin >> tc[i];
-    std::cout << std::endl;
+    cout << "Please specify tile " << i << ": [blwgod]-> ";
+    cin >> tc[i];
+    cout << endl;
   }
 
   int c = 0;
@@ -104,12 +102,12 @@ int getElement(char tc) {
 void printTiles(char tc[NUM_TILES], int ti[NUM_TILES]) {
 
     for(int i = 0; i < NUM_TILES; i++) {
-      if(i == 0 || i == 16) std::cout << "\n     ";
-      else if(i == 3 || i == 12) std::cout << "\n   ";
-      else if(i == 7) std::cout << "\n";
-      if(tc[i]) std::printf("[%c%02d]", tc[i], ti[i]);
-      else std::printf("[ %1d ]", i);
+      if(i == 0 || i == 16) cout << "\n     ";
+      else if(i == 3 || i == 12) cout << "\n   ";
+      else if(i == 7) cout << "\n";
+      if(tc[i]) printf("[%c%02d]", tc[i], ti[i]);
+      else printf("[ %1d ]", i);
     }
 
-    std::cout << "\n\n";
+    cout << "\n\n";
 }

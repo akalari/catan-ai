@@ -102,6 +102,7 @@ class Corner {
    int adjPort; // Can be null
    int settlement;
    int index;
+   int city;
  public:
    static const int NO_SETTLEMENT = -2;
    vector<int> &getAdjTiles();
@@ -110,6 +111,8 @@ class Corner {
    void setPort(int trader);
    int getSettlement();
    void setSettlement(int color);
+   int getCity();
+   void setCity(int color);
    int getIndex();
    void setIndex(int ind);
    Corner();
@@ -145,7 +148,6 @@ class Board {
         void initEdges();
         void initCorners();
         void initPorts();
-
         // board utils
         int getOtherCorner(int e, int c);
         vector<int> getSettlements(int number);
@@ -153,7 +155,6 @@ class Board {
         bool isTwoAway(int settlement);
         bool adjOwnRoad(int settlement, int player);
         bool adjOwnProperty(int road, int player);
-
         // printBoard() helper methods
         void printStartRow(string (&out)[9], int row);
         void printRows(string (&out)[9]);
@@ -168,6 +169,14 @@ class Board {
         Edge (&getEdges())[NUM_EDGES];
         Corner (&getCorners())[NUM_CORNERS];
         Port (&getPorts())[NUM_PORTS];
+
+        int getOtherCorner(int e, int c);
+        vector<int> getMatchingTiles(int num);
+        vector<int> getSettlements(int number);
+        vector<int> portsOwned(int player);
+        bool isTwoAway(int settlement);
+        bool adjOwnRoad(int settlement, int player);
+        bool adjOwnProperty(int road, int player);
 
         void printBoard();
 
