@@ -19,7 +19,6 @@ void loadBoard(Board &b, char tc[NUM_TILES], int ti[NUM_TILES]) {
         Tile &tile = b.getTiles()[t];
         tile.setResource(getElement(tc[t]));
         tile.setNum(ti[t]);
-        tile.setIndex(t);
     }
 }
 

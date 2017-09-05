@@ -3,28 +3,29 @@
 #include <algorithm>
 
 #include "Board.h"
+#include "BoardUtils.h"
 #include "SetupBoard.h"
+#include "TestBoard.h"
 
 using namespace std;
 
-void firstSett(Board b);
 
 int main() {
     cout << "Testing Board" << endl;
-    Board board = Board();
-    randomBoard(board, TILE_POSSIBILITIES);
-    board.printBoard();
-    firstSett(board);
+    vector <Board> boards;
+
+    randomBoards(2, boards);
+    writeBoards("twoboards.csv", boards);
+    loadBoards("twoboards.csv", boards);
     return 0;
 }
 
-// TODO: algorithmically determine the following parameters:
-double resourceWeights[] = {1,1,0.4,0.6,0.7}; // Brick Lumber Wool Grain ore
-double probWeights = 0.25; // 0: only probability, 0.5: similarity to weights
-
-int deck[] = {0,0,0,0,0};
-
 void firstSett(Board b) {
+    double resourceWeights[] = {1,1,0.4,0.6,0.7}; // Brick Lumber Wool Grain ore
+    double probWeights = 0.25; // 0: only probability, 0.5: similarity to weights
+
+    int deck[] = {0,0,0,0,0};
+
     srand(time(0));
     int tile = rand() % 19;
     int corner = rand() % 6;
@@ -58,11 +59,9 @@ void firstSett(Board b) {
 
     b.getCorners()[bestC].setSettlement(1);
 
-    b.printBoard();
-
     cout << "Best score: " << bestScore << endl;
 
-    for(int i = 0; i < 36; i++) {
+    for(int i = 0; i < 100; i++) {
         int roll = (rand() % 6 + 1) + (rand() % 6 + 1);
         std::vector <int> matches = b.getMatchingTiles(roll);
         for(int t:matches) {
@@ -76,9 +75,9 @@ void firstSett(Board b) {
 
     double realScore = 0;
     for(int i = 0; i < 5; i++) {
-        realScore += deck[i]*resourceWeights[i];
+        realScore += deck[i];
         cout << deck[i] << " ";
     }
-    realScore /= 36.0;
+    realScore /= 100.0;
     cout << "| Real Score: " << realScore << endl;
 }

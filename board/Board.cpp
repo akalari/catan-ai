@@ -88,6 +88,7 @@ void Board::initBoard() {
 void Board::initTiles() {
     for(int t = 0; t < NUM_TILES; t++) {
         tiles[t] = Tile();
+        tiles[t].setIndex(t);
     }
 }
 
