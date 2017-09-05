@@ -170,9 +170,10 @@ class Board {
         Port (&getPorts())[NUM_PORTS];
 
         void printBoard();
-        
+
         //board utils
         vector<int> getMatchingTiles(int num);
+        bool canPlaceSetttlement(int settlement, int player, bool checkRoad);
 };
 
 #endif

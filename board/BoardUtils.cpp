@@ -38,7 +38,7 @@ vector<int> Board::getMatchingTiles(int num) {
  * Returns the list of occupied settlements adjacent
  * to a tile
  */
-vector<int> Board::getSettlements(int tile) { 
+vector<int> Board::getSettlements(int tile) {
     vector<int> matches;
     for (int c : tiles[tile].getAdjCorners())
       if (corners[c].getSettlement() != Corner::NO_SETTLEMENT)
@@ -56,6 +56,16 @@ vector<int> Board::portsOwned(int player) {
         ports.push_back(c.getPort());
     }
     return ports;
+}
+
+/**
+ * Checks if a player can place a settlement at a given spot
+ * checkRoad determines whether adjacency to a road should be enforced
+ * (should be false for first/second settlement placement)
+ */
+bool Board::canPlaceSetttlement(int settlement, int player, bool checkRoad){
+    return isTwoAway(settlement) &&
+        (!checkRoad || adjOwnRoad(settlement, player));
 }
 
 /**
