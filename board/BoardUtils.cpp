@@ -1,8 +1,13 @@
 #include <iostream>
+#include <fstream>
+#include <sstream>
 #include <string>
 #include <vector>
+#include <algorithm> // std::replace
 
 #include "Board.h"
+#include "SetupBoard.h"
+#include "BoardUtils.h"
 
 using namespace std;
 
@@ -33,7 +38,7 @@ vector<int> Board::getMatchingTiles(int num) {
  * Returns the list of occupied settlements adjacent
  * to a tile
  */
-vector<int> Board::getSettlements(int tile) { 
+vector<int> Board::getSettlements(int tile) {
     vector<int> matches;
     for (int c : tiles[tile].getAdjCorners())
       if (corners[c].getSettlement() != Corner::NO_SETTLEMENT)
@@ -51,6 +56,16 @@ vector<int> Board::portsOwned(int player) {
         ports.push_back(c.getPort());
     }
     return ports;
+}
+
+/**
+ * Checks if a player can place a settlement at a given spot
+ * checkRoad determines whether adjacency to a road should be enforced
+ * (should be false for first/second settlement placement)
+ */
+bool Board::canPlaceSetttlement(int settlement, int player, bool checkRoad){
+    return corners[settlement].getSettlement() < 0 && isTwoAway(settlement) &&
+        (!checkRoad || adjOwnRoad(settlement, player));
 }
 
 /**
@@ -322,4 +337,72 @@ void Board::printTileMiddle(int tile, string (&out)[9]) {
             out[5] += yellow + "   {}_- {}   " + clr;
             return;
     }
+}
+
+/**
+ * Generates a list of random boards
+ * of size n, and populates vector &boards with these boards
+ */
+void randomBoards(int n, vector<Board> &boards) {
+    boards.clear();
+    for(int i = 0; i < n; i++) {
+        boards.push_back(Board());
+        randomBoard(boards.back(), TILE_POSSIBILITIES);
+    }
+}
+
+/**
+ * Writes a vector of boards to a CSV file at the specified filename
+ */
+void writeBoards(string filename, vector<Board> &boards) {
+    ofstream outfile(filename);
+
+    for(Board &b:boards) {
+        int boardInts[5*19] = {0}; // Sparse board array
+
+        for(int t = 0; t < NUM_TILES; t++) {
+            int r = b.getTiles()[t].getResource();
+            int n = b.getTiles()[t].getNum();
+            if(r > -1)
+                boardInts[t*5 + r] = n;
+        }
+
+        outfile << boardInts[0];
+        for(int i = 1; i < 5*19; i++)
+            outfile << "," << boardInts[i];
+        outfile << endl;
+    }
+
+    outfile.close();
+}
+
+/**
+ * Loads a vector of boards with data from a CSV file
+ * at the specified filename
+ */
+void loadBoards(string filename, vector<Board> &boards) {
+    boards.clear();
+    ifstream infile(filename);
+
+    string line;
+    while(getline(infile, line)) {
+        Board b = Board();
+
+        replace(line.begin(), line.end(), ',', ' ');
+        stringstream istr(line);
+        //line: 0b,0l,0w,0g,0h,1b,1l...
+        int n, i = 0;
+        while(istr >> n) {
+            int tile = i/5; //0 -> 18
+            int res = i%5; //0 -> 4
+            if(n != 0) {
+                b.getTiles()[tile].setResource(res);
+                b.getTiles()[tile].setNum(n);
+            }
+            i++;
+        }
+
+        boards.push_back(b); // Pushes a copy, but that's ok
+    }
+    infile.close();
 }

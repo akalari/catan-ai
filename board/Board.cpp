@@ -91,6 +91,7 @@ void Board::initBoard() {
 void Board::initTiles() {
     for(int t = 0; t < NUM_TILES; t++) {
         tiles[t] = Tile();
+        tiles[t].setIndex(t);
     }
 }
 
@@ -133,7 +134,7 @@ void Board::initCorners() {
     int nextCorner = 0;
     // Loop through all the tiles
     for (int t = 0; t < NUM_TILES; t++) {
-        
+
         Tile &tile = tiles[t];
         //Loop through all the corners, with indexes of x.5
         for(double c = 0.5; c < 6; c += 1) {
@@ -166,11 +167,11 @@ void Board::initCorners() {
             }
 
             // Add adjacent edges to corner, and add corner to edges
-            corner.getAdjEdges().push_back(lEdge);
             int el = tile.getAdjEdges()[lEdge];
+            corner.getAdjEdges().push_back(el);
             edges[el].getAdjCorners().push_back(nextCorner);
-            corner.getAdjEdges().push_back(rEdge);
             int er = tile.getAdjEdges()[rEdge];
+            corner.getAdjEdges().push_back(er);
             edges[er].getAdjCorners().push_back(nextCorner);
             if(thirdEdge != -1) {
                 corner.getAdjEdges().push_back(thirdEdge);
@@ -201,4 +202,12 @@ void Board::initPorts() {
         }
 
     }
+}
+
+void Board::buildSettlement(int corner, int player) {
+    corners[corner].setSettlement(player);
+}
+
+void Board::buildRoad(int edge, int player) {
+    edges[edge].setRoad(player);
 }
