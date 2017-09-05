@@ -14,16 +14,25 @@ int main() {
     cout << "Testing Board" << endl;
     vector <Board> boards;
 
-    randomBoards(2, boards);
+    randomBoards(5, boards);
 
-    placeFirstSettDP(boards.front(), 2);
+    for(Board &b:boards){
+        placeFirstSettDP(b, 3);
+        placeSecondSettDP(b, 3);
+        b.printBoard();
+    }
 
     return 0;
 }
 
-int bestCornerDP(Board b) {
-    double resourceWeights[] = {1,1,0.4,0.6,0.7}; // Brick Lumber Wool Grain ore
-    double probWeights = 0.25; // 0: only probability, 0.5: similarity to weights
+/**
+ * Determines the best corner to build at, given an array of weights and probabilityWeight metric
+ * probWeights: a score between 0-0.5
+ *          0: only probability, 0.5: similarity to weights
+ * resourceWeights: how much to prioritize each resource, from 0-1
+ *          order: {Brick, Lumber, Wool, Grain, Ore}
+ */
+int bestCornerDP(Board &b, double (&resourceWeights)[5], double probWeights) {
 
     pair<double, int> highScore;
 
@@ -58,7 +67,18 @@ int bestCornerDP(Board b) {
     return highScore.second;
 }
 
-void placeFirstSettDP(Board b, int player) {
-    int bestCorner = bestCornerDP(b);
-    b.getCorners()[bestCorner].setSettlement(player);
+void placeFirstSettDP(Board &b, int player) {
+    double resourceWeights[5] = {1,1,0.4,0.6,0.7};
+    int bestCorner = bestCornerDP(b, resourceWeights, 0.25);
+    b.buildSettlement(bestCorner, player);
+    int e = b.getCorners()[bestCorner].getAdjEdges().front();
+    b.buildRoad(e, player);
+}
+
+void placeSecondSettDP(Board &b, int player) {
+    double resourceWeights[5] = {0.4, 0.4, 0.9, 0.9, 0.9};
+    int bestCorner = bestCornerDP(b, resourceWeights, 0.25);
+    b.buildSettlement(bestCorner, player);
+    int e = b.getCorners()[bestCorner].getAdjEdges().front();
+    b.buildRoad(e, player);
 }
