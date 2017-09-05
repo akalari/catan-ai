@@ -15,6 +15,7 @@ class Player {
   private:
     vector<int> resHand;
     vector<int> devHand;
+    vector<int> settlements;
     int numRoads;
     int numSettlements;
     int numCities;
@@ -29,6 +30,8 @@ class Player {
     bool takeDevCard(int e);
     void inputRoad();
     void placeRoad(int e);
+    int getColor();
+    vector<int>& getSettlements();
     void inputSettlement(bool isFirstSettlement);
     void placeSettlement(int c, bool isFirstSettlement);
     void placeCity(int c);
@@ -36,6 +39,8 @@ class Player {
     string getName();
     int getScore();
     string toString();
+    int bestCornerDP(Board &board, double (&resWeights)[5], double probWeights);
+    double (&calculateWeights(Board &board))[5];
     Player(int c, string string_color);
 };
 

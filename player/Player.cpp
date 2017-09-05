@@ -150,3 +150,68 @@ string Player::toString() {
 int Player::getScore() {
   return score;
 }
+
+vector<int>& getSettlements() {
+  return settlements;
+}
+
+int Player::getColor() {
+  return color;
+}
+
+/**
+ * Determines the best corner to build at
+ * probWeights: a score between 0-0.5
+ * resourceWeights: order: {Brick, Lumber, Wool, Grain, Ore}
+ */
+int Player::bestCornerDP(Board &board, double (&resWeights)[5], double probWeights) {
+
+    pair<double, int> highScore;
+    // Sum of Squares of Weights
+    double ssW = accumulate(begin(resWeights), end(resWeights),
+            0.0, [](double a, double b){ return a = b*b; });
+
+    for(int c = 0; c < NUM_CORNERS; c++) {
+        if(!board.canPlaceSetttlement(c, -1, false)) continue;
+        // Make sure we can place a settlement here
+
+        double score = 0;
+        double probs[5] = {0,0,0,0,0};
+
+        for(int t : board.getCorners()[c].getAdjTiles()) {
+            Tile &tile = board.getTiles()[t];
+            double probability = (6 - abs(tile.getNum() - 7))/36.0;
+            probs[tile.getResource()] += probability;
+        }
+
+        // Sum of squares of probs
+        double ssP = accumulate(begin(probs), end(probs),
+                0.0, [](double a, double b){ return a + b*b; });
+        if(ssP == 0) continue;
+
+        score = inner_product
+          (begin(probs), end(probs), resWeights, 0.0)/
+          (pow(ssW*ssP, probWeights));
+
+        if(highScore < make_pair(score, c))
+            highScore = make_pair(score, c);
+    }
+
+    return highScore.second;
+}
+
+double (&Player::calculateWeights(Board &board))[5] {
+
+  double[5] probWeights = {0, 0, 0, 0, 0};
+  double[5] stdWeights = {1, 0.9, 0.4, 0.6, 0.8};
+  // Get the average distance from 7 for each resource
+  for (Tile t : board.getTiles) {
+    probWeights[t.getResource()] = (7-t.getNum());
+  }
+  // Convert the resource weight to a value lower than 1
+  for (double res : probWeights)
+    res = 1-(0.4*res);
+  for (int i = 0; i < probWeights.size(); i++)
+    probWeights[i] *= stdWeights;
+  return probWeights;
+}
