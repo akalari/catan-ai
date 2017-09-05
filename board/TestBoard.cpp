@@ -2,6 +2,8 @@
 #include <ctime>
 #include <algorithm>
 #include <utility>
+#include <cmath>
+#include <numeric>
 
 #include "Board.h"
 #include "BoardUtils.h"
@@ -17,8 +19,8 @@ int main() {
     randomBoards(5, boards);
 
     for(Board &b:boards){
-        placeFirstSettDP(b, 3);
-        placeSecondSettDP(b, 3);
+        placeFirstSettDP(b, 1);
+        placeSecondSettDP(b, 1);
         b.printBoard();
     }
 
@@ -26,39 +28,40 @@ int main() {
 }
 
 /**
- * Determines the best corner to build at, given an array of weights and probabilityWeight metric
+ * Determines the best corner to build at
  * probWeights: a score between 0-0.5
- *          0: only probability, 0.5: similarity to weights
- * resourceWeights: how much to prioritize each resource, from 0-1
- *          order: {Brick, Lumber, Wool, Grain, Ore}
+ *
+ * resourceWeights: order: {Brick, Lumber, Wool, Grain, Ore}
  */
-int bestCornerDP(Board &b, double (&resourceWeights)[5], double probWeights) {
+int bestCornerDP(Board &board, double (&resWeights)[5], double probWeights) {
 
     pair<double, int> highScore;
-
-    // sum of squares of weights
-    double ssW = accumulate(begin(resourceWeights), end(resourceWeights),
+    // Sum of Squares of Weights
+    double ssW = accumulate(begin(resWeights), end(resWeights),
             0.0, [](double a, double b){ return a = b*b; });
 
     for(int c = 0; c < NUM_CORNERS; c++) {
-        if(!b.canPlaceSetttlement(c, -1, false))continue; // Make sure we can place a settlement here
+        if(!board.canPlaceSetttlement(c, -1, false)) continue;
+        // Make sure we can place a settlement here
 
         double score = 0;
         double probs[5] = {0,0,0,0,0};
 
-        for(int t:b.getCorners()[c].getAdjTiles()){
-            Tile &tile = b.getTiles()[t];
+        for(int t : board.getCorners()[c].getAdjTiles()) {
+            Tile &tile = board.getTiles()[t];
             double probability = (6 - abs(tile.getNum() - 7))/36.0;
             probs[tile.getResource()] += probability;
         }
 
-        //sum of squares of probs
+        // Sum of squares of probs
         double ssP = accumulate(begin(probs), end(probs),
                 0.0, [](double a, double b){ return a + b*b; });
-        if(ssP == 0)continue; //if we have a score of 0
+        if(ssP == 0)
+          continue;
 
-        score = inner_product(begin(probs), end(probs), resourceWeights, 0.0)/
-                    (pow(ssW*ssP, probWeights));
+        score = inner_product
+          (begin(probs), end(probs), resWeights, 0.0)/
+          (pow(ssW*ssP, probWeights));
 
         if(highScore < make_pair(score, c))
             highScore = make_pair(score, c);
@@ -68,7 +71,7 @@ int bestCornerDP(Board &b, double (&resourceWeights)[5], double probWeights) {
 }
 
 void placeFirstSettDP(Board &b, int player) {
-    double resourceWeights[5] = {1,1,0.4,0.6,0.7};
+    double resourceWeights[5] = {1,0.9,0.4,0.6,0.8};
     int bestCorner = bestCornerDP(b, resourceWeights, 0.25);
     b.buildSettlement(bestCorner, player);
     int e = b.getCorners()[bestCorner].getAdjEdges().front();

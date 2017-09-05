@@ -148,14 +148,7 @@ class Board {
         void initEdges();
         void initCorners();
         void initPorts();
-        // board utils
-        int getOtherCorner(int e, int c);
-        vector<int> getSettlements(int number);
-        vector<int> portsOwned(int player);
-        bool isTwoAway(int settlement);
-        bool adjOwnRoad(int settlement, int player);
-        bool adjOwnProperty(int road, int player);
-        // printBoard() helper methods
+        // PrintBoard() Helper Methods
         void printStartRow(string (&out)[9], int row);
         void printRows(string (&out)[9]);
         void printTile(int tile, string (&out)[9], bool l, bool u, bool d, bool r);
@@ -171,7 +164,6 @@ class Board {
         Port (&getPorts())[NUM_PORTS];
 
         int getOtherCorner(int e, int c);
-        vector<int> getMatchingTiles(int num);
         vector<int> getSettlements(int number);
         vector<int> portsOwned(int player);
         bool isTwoAway(int settlement);
@@ -183,7 +175,7 @@ class Board {
         void buildSettlement(int corner, int player);
         void buildRoad(int edge, int player);
 
-        //board utils
+        // Board Utils
         vector<int> getMatchingTiles(int num);
         bool canPlaceSetttlement(int settlement, int player, bool checkRoad);
 };
