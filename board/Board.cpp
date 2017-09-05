@@ -200,3 +200,11 @@ void Board::initPorts() {
 
     }
 }
+
+void Board::buildSettlement(int corner, int player) {
+    corners[corner].setSettlement(player);
+}
+
+void Board::buildRoad(int edge, int player) {
+    edges[edge].setRoad(player);
+}

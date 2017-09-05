@@ -171,6 +171,9 @@ class Board {
 
         void printBoard();
 
+        void buildSettlement(int corner, int player);
+        void buildRoad(int edge, int player);
+
         //board utils
         vector<int> getMatchingTiles(int num);
         bool canPlaceSetttlement(int settlement, int player, bool checkRoad);
