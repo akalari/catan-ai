@@ -178,6 +178,7 @@ class Board {
         // Board Utils
         vector<int> getMatchingTiles(int num);
         bool canPlaceSetttlement(int settlement, int player, bool checkRoad);
+        int longestRoad(int color);
 };
 
 #endif

@@ -406,3 +406,39 @@ void loadBoards(string filename, vector<Board> &boards) {
     }
     infile.close();
 }
+
+int Board::longestRoad(int color) {
+    int maxWeight = 0;
+
+    for(int startE = 0; startE < NUM_CORNERS; startE++) {
+        if(edges[startE].getRoad() != color) continue;
+
+        bool visitedEdge[NUM_EDGES] = {false};
+        bool visitedCorner[NUM_CORNERS] = {false};
+        int edgeWeights[NUM_EDGES] = {0};
+
+        vector<int> edgeQueue;
+        edgeQueue.push_back(startE);
+
+        while(!edgeQueue.empty()) {
+            int e = edgeQueue.back();
+            edgeQueue.pop_back();
+            visitedEdge[e] = true;
+
+            for(int c:edges[e].getAdjCorners()) {
+                if(corners[c].getSettlement() != Corner::NO_SETTLEMENT &&
+                    corners[c].getSettlement() != color) continue;
+                if(visitedCorner[c]) continue;
+                visitedCorner[c] = true;
+                for(int adjE:corners[c].getAdjEdges()) {
+                    if(adjE == e || edges[adjE].getRoad() != color || visitedEdge[adjE]) continue;
+                    edgeWeights[adjE] = max(edgeWeights[adjE], edgeWeights[e] + 1);
+                    if(edgeWeights[adjE] > maxWeight) maxWeight = edgeWeights[adjE];
+                    edgeQueue.push_back(adjE);
+                }
+            }
+        }
+    }
+
+    return maxWeight + 1;
+}
