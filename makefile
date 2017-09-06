@@ -1,8 +1,17 @@
 CXXFLAGS = -std=c++14 -g
 CC = clang++
 
-catan-board: board/Board.cpp player/Player.cpp
-	$(CC) $(CXXFLAGS) board/Board.cpp board/SetupBoard.cpp board/BoardUtils.cpp board/TestBoard.cpp player/Player.cpp -o bin/Board
+BOARDFILES = board/Board.cpp board/BoardUtils.cpp board/SetupBoard.cpp
 
-catan-player: board/Board.cpp player/Player.cpp board/SetupBoard.cpp
-	$(CC) $(CXXFLAGX) board/Board.cpp board/SetupBoard.cpp player/Player.cpp -o bin/PlayerBoard
+catan-board: $(BOARDFILES) board/TestBoard.cpp
+	$(CC) $(CXXFLAGS) $(BOARDFILES) board/TestBoard.cpp -o bin/Board
+
+PLAYERFILES = player/Player.cpp
+
+catan-player: $(BOARDFILES) $(PLAYERFILES)
+	$(CC) $(CXXFLAGX) $(BOARDFILES) $(PLAYERFILES) -o bin/PlayerBoard
+
+GAMEFILES = $(BOARDFILES) $(PLAYERFILES) gameplay/Game.cpp
+
+catan-game: $(GAMEFILES)
+	$(CC) $(CXXFLAGX) $(GAMEFILES) -o bin/Game
