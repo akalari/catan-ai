@@ -208,12 +208,8 @@ vector<double> Player::calculateWeights(Board &board) {
   }
   // Convert the resource weight to a value lower than 1
   for (int i = 0; i < probWeights.size(); i++) {
-    cout << probWeights[i] << endl;
     probWeights[i] = (0.2*(probWeights[i]/numResTiles[i]));
-    cout << probWeights[i] << endl;
     probWeights[i] *= stdWeights[i];
-    cout << probWeights[i] << endl << endl;
-
   }
 
   return probWeights;
