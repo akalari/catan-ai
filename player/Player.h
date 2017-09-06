@@ -39,8 +39,8 @@ class Player {
     string getName();
     int getScore();
     string toString();
-    int bestCornerDP(Board &board, double (&resWeights)[5], double probWeights);
-    double (&calculateWeights(Board &board))[5];
+    int bestCornerDP(Board &board, vector<double> resWeights, double probWeights);
+    vector<double> calculateWeights(Board &board);
     Player(int c, string string_color);
 };
 

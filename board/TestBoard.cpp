@@ -22,16 +22,14 @@ int main() {
 
     for(Board &b:boards){
       Player testPlayer = Player(2, "BLUE");
-      int bestIndex = testPlayer.bestCornerDP(
-                                   b, testPlayer.calculateWeights(b), 0.25);
+      int bestIndex = testPlayer.bestCornerDP
+        (b, testPlayer.calculateWeights(b), 0.25);
       b.buildSettlement(bestIndex, testPlayer.getColor());
-        //placeSecondSettDP(b, 1);
       b.printBoard();
     }
 
     return 0;
 }
-
 
  /*void placeFirstSettDP(Board &b, int player) {
     double resourceWeights[5] = {1,0.9,0.4,0.6,0.8};

@@ -164,7 +164,7 @@ int Player::getColor() {
  * probWeights: a score between 0-0.5
  * resourceWeights: order: {Brick, Lumber, Wool, Grain, Ore}
  */
-int Player::bestCornerDP(Board &board, double (&resWeights)[5], double probWeights) {
+int Player::bestCornerDP(Board &board, vector<int> resWeights, double probWeights) {
 
     pair<double, int> highScore;
     // Sum of Squares of Weights
@@ -200,10 +200,10 @@ int Player::bestCornerDP(Board &board, double (&resWeights)[5], double probWeigh
     return highScore.second;
 }
 
-double (&Player::calculateWeights(Board &board))[5] {
+vector<double> Player::calculateWeights(Board &board)) {
 
-  double[5] probWeights = {0, 0, 0, 0, 0};
-  double[5] stdWeights = {1, 0.9, 0.4, 0.6, 0.8};
+  vector<double> probWeights = {0, 0, 0, 0, 0};
+  vector<double> stdWeights = {1, 0.9, 0.4, 0.6, 0.8};
   // Get the average distance from 7 for each resource
   for (Tile t : board.getTiles) {
     probWeights[t.getResource()] = (7-t.getNum());
@@ -213,5 +213,6 @@ double (&Player::calculateWeights(Board &board))[5] {
     res = 1-(0.4*res);
   for (int i = 0; i < probWeights.size(); i++)
     probWeights[i] *= stdWeights;
+
   return probWeights;
 }
