@@ -63,7 +63,7 @@ vector<int> Board::portsOwned(int player) {
  * checkRoad determines whether adjacency to a road should be enforced
  * (should be false for first/second settlement placement)
  */
-bool Board::canPlaceSetttlement(int settlement, int player, bool checkRoad){
+bool Board::canPlaceSettlement(int settlement, int player, bool checkRoad){
     return corners[settlement].getSettlement() < 0 && isTwoAway(settlement) &&
         (!checkRoad || adjOwnRoad(settlement, player));
 }

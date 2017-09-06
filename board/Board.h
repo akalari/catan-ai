@@ -170,6 +170,7 @@ class Board {
         bool adjOwnRoad(int settlement, int player);
         bool adjOwnProperty(int road, int player);
 
+
         void printBoard();
 
         void buildSettlement(int corner, int player);
@@ -177,7 +178,7 @@ class Board {
 
         // Board Utils
         vector<int> getMatchingTiles(int num);
-        bool canPlaceSetttlement(int settlement, int player, bool checkRoad);
+        bool canPlaceSettlement(int settlement, int player, bool checkRoad);
 };
 
 #endif

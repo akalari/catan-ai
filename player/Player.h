@@ -31,7 +31,7 @@ class Player {
     void inputRoad();
     void placeRoad(int e);
     int getColor();
-    vector<int>& getSettlements();
+    vector<int> &getSettlements();
     void inputSettlement(bool isFirstSettlement);
     void placeSettlement(int c, bool isFirstSettlement);
     void placeCity(int c);

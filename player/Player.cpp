@@ -3,6 +3,9 @@
 #include <cstdio>
 #include <vector>
 #include <string>
+#include <cmath>
+#include <algorithm>
+#include <numeric>
 
 #include "Player.h"
 #include "../elements/Elements.h"
@@ -16,9 +19,6 @@ auto corners = board.getCorners();
 auto edges = board.getEdges();
 auto tiles = board.getTiles();
 auto ports = board.getPorts();
-
-int main () {return 0;}
-
 
 Player::Player (int c, string string_color) {
   color = c;
@@ -77,15 +77,11 @@ bool Player::takeDevCard(int e) {
 }
 
 void Player::placeSettlement(int c, bool isFirstSettlement) {
-  if (!board.isTwoAway(c) || corners[c].getSettlement() != NULL) {
+  if (!board.canPlaceSettlement(c, color, !isFirstSettlement)) {
     cout << "You cannot place a settlement here." << endl;
     return;
   }
-  if (!isFirstSettlement && !board.adjOwnRoad(c, color)) {
-    cout << "You cannot place a settlement here." << endl;
-    return;
-  }
-  corners[c].setSettlement(color);
+  board.buildSettlement(c, color);
   numSettlements--;
   score++;
 }
@@ -151,7 +147,7 @@ int Player::getScore() {
   return score;
 }
 
-vector<int>& getSettlements() {
+vector<int> &Player::getSettlements() {
   return settlements;
 }
 
@@ -164,7 +160,7 @@ int Player::getColor() {
  * probWeights: a score between 0-0.5
  * resourceWeights: order: {Brick, Lumber, Wool, Grain, Ore}
  */
-int Player::bestCornerDP(Board &board, vector<int> resWeights, double probWeights) {
+int Player::bestCornerDP(Board &board, vector<double> resWeights, double probWeights) {
 
     pair<double, int> highScore;
     // Sum of Squares of Weights
@@ -172,7 +168,7 @@ int Player::bestCornerDP(Board &board, vector<int> resWeights, double probWeight
             0.0, [](double a, double b){ return a = b*b; });
 
     for(int c = 0; c < NUM_CORNERS; c++) {
-        if(!board.canPlaceSetttlement(c, -1, false)) continue;
+        if(!board.canPlaceSettlement(c, -1, false)) continue;
         // Make sure we can place a settlement here
 
         double score = 0;
@@ -190,8 +186,8 @@ int Player::bestCornerDP(Board &board, vector<int> resWeights, double probWeight
         if(ssP == 0) continue;
 
         score = inner_product
-          (begin(probs), end(probs), resWeights, 0.0)/
-          (pow(ssW*ssP, probWeights));
+          (begin(probs), end(probs), begin(resWeights), 0.0)
+          /pow(ssW*ssP, probWeights);
 
         if(highScore < make_pair(score, c))
             highScore = make_pair(score, c);
@@ -200,19 +196,25 @@ int Player::bestCornerDP(Board &board, vector<int> resWeights, double probWeight
     return highScore.second;
 }
 
-vector<double> Player::calculateWeights(Board &board)) {
+vector<double> Player::calculateWeights(Board &board) {
 
   vector<double> probWeights = {0, 0, 0, 0, 0};
+  vector<double> numResTiles = {0, 0, 0, 0, 0};
   vector<double> stdWeights = {1, 0.9, 0.4, 0.6, 0.8};
   // Get the average distance from 7 for each resource
-  for (Tile t : board.getTiles) {
-    probWeights[t.getResource()] = (7-t.getNum());
+  for (Tile &t : board.getTiles()) {
+    probWeights[t.getResource()] += abs(7-t.getNum());
+    numResTiles[t.getResource()]++;
   }
   // Convert the resource weight to a value lower than 1
-  for (double res : probWeights)
-    res = 1-(0.4*res);
-  for (int i = 0; i < probWeights.size(); i++)
-    probWeights[i] *= stdWeights;
+  for (int i = 0; i < probWeights.size(); i++) {
+    cout << probWeights[i] << endl;
+    probWeights[i] = (0.2*(probWeights[i]/numResTiles[i]));
+    cout << probWeights[i] << endl;
+    probWeights[i] *= stdWeights[i];
+    cout << probWeights[i] << endl << endl;
+
+  }
 
   return probWeights;
 }
