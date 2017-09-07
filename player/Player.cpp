@@ -1,4 +1,11 @@
+#include <cstddef>
 #include <iostream>
+#include <cstdio>
+#include <vector>
+#include <string>
+#include <cmath>
+#include <algorithm>
+#include <numeric>
 
 #include "Player.h"
 #include "../elements/Elements.h"
@@ -13,21 +20,36 @@ auto edges = board.getEdges();
 auto tiles = board.getTiles();
 auto ports = board.getPorts();
 
-Player::Player (int color, Board b):
-    numRoads(15), numSettlements(5), numCities(4), score(0),
-    this->color(color), board(b)
-{
-    getName();
+Player::Player (int c, string string_color) {
+  color = c;
+  numRoads = 15;
+  numSettlements = 5;
+  numCities = 4;
+  score = 0;
+  color_string = color;
+  switch (color) {
+    case RED:
+      color_string = "RED";
+      cout << "My color is RED. What is my name? ";
+      cin >> name;
+      break;
+    case BLUE:
+      color_string = "BLUE";
+      cout << "My color is BLUE. What is my name? ";
+      cin >> name;
+      break;
+    case WHITE:
+      color_string = "WHITE";
+      cout << "My color is WHITE. What is my name? ";
+      cin >> name;
+      break;
+    case ORANGE:
+      color_string = "ORANGE";
+      cout << "My color is ORANGE. What is my name? ";
+      cin >> name;
+  }
 }
 
-void Player::getName() {
-    cout << "My color is " << COLOR_STRINGS[color] << ". What is my name? ";
-    cin >> name;
-}
-
-
-// OLD
-/*
 void Player::addResCard(int e) {
   resHand.push_back(e);
 }
@@ -132,5 +154,3 @@ vector<int> &Player::getSettlements() {
 int Player::getColor() {
   return color;
 }
-
- */

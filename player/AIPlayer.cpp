@@ -29,7 +29,8 @@ vector<double> AIPlayer::calculateWeights(Board &board) {
  * probWeights: a score between 0-0.5
  * resourceWeights: order: {Brick, Lumber, Wool, Grain, Ore}
  */
-int Player::bestCornerDP(Board &board, vector<double> resWeights, double probWeights) {
+int AIPlayer::bestCornerDP
+  (Board &board, vector<double> resWeights, double probWeights) {
 
     pair<double, int> highScore;
     // Sum of Squares of Weights
@@ -63,4 +64,45 @@ int Player::bestCornerDP(Board &board, vector<double> resWeights, double probWei
     }
 
     return highScore.second;
+}
+
+int AIPlayer::chooseBestRoad(int corn) {
+
+  vector<int> pathToPort = getPathToPort(resource, corn);
+  if (pathToPort.size() < 4)
+    return pathToPort[pathToPort.size()-1];
+  else 
+
+}
+
+// Use a breadth first search to find the path to the port
+vector<int> AIPlayer::getPathToPort(int resource, int corn) {
+
+  // Vector of pairs of distance and predecessor
+  vector<int> search;
+  vector<int> path;
+  int predecessors[NUM_CORNERS] = {-1};
+  int port = -1;
+
+  searchCorners.push_back(corner.getIndex());
+  do {
+    for (int c : search) {
+      for (int adjC : b.getCorners()[c].getAdjEdges()) {
+        visited[c] = true;
+        search.erase(remove(search.begin(), search.end(), c), search.end());
+        if (adjC.getPort < 0) {
+          search.push_back(adjC);
+          predecessors[adjC] = c;
+        }
+        else {
+          return predecessorGetsPath(adjC, predecessors, path);
+        }
+      }
+    }
+  } while(!cornersToSearch.empty() && port != resource);
+}
+
+vector<int> predecessorGetsPath
+         (int endPath, int[NUM_CORNERS] preds, vector<int> path) {
+  return predecessorGetsPath(preds[endPath], preds, path.push_back(endPath));
 }

@@ -10,7 +10,11 @@ class AIPlayer: public Player {
         // Implemented from Player
         void inputName();
 
-        vector<double> AIPlayer::calculateWeights(Board &board);
+        vector<double> calculateWeights(Board &board);
+        int bestCornerDP
+          (Board &board, vector<double> resWeights, double probWeights);
+
+        int chooseBestRoad(Corner corn);
 };
 
 #endif

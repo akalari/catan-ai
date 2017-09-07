@@ -71,23 +71,4 @@ class Player {
         int getColor();
 };
 
-    // // OLD
-    // void addResCard(int e);
-    // bool takeResCard(int e);
-    // void addDevCard(int e);
-    // bool takeDevCard(int e);
-    // void inputRoad();
-    // void placeRoad(int e);
-    // int getColor();
-    // vector<int> &getSettlements();
-    // void inputSettlement(bool isFirstSettlement);
-    // void placeSettlement(int c, bool isFirstSettlement);
-    // void placeCity(int c);
-    // void inputCity();
-    // string getName();
-    // string toString();
-    // int bestCornerDP(Board &board, vector<double> resWeights, double probWeights);
-    // vector<double> calculateWeights(Board &board);
-};
-
 #endif
