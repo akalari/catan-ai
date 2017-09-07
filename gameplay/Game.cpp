@@ -1,6 +1,7 @@
 #include <cstdio>
 #include <cstddef>
-#include <cstdlib>
+#include <cstdlib> // std::rand, std::srand
+#include <ctime> // time
 #include <string>
 #include <iostream>
 #include <vector>
@@ -14,6 +15,7 @@
 using namespace std;
 
 int main () {
+  srand((int) time(0));
 
   // Before gameplay starts
   Player players[4] = initPlayers();

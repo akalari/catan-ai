@@ -12,11 +12,13 @@ using namespace std;
 #define PLAYER_H
 
 enum Move {BUILD_SETT, BUILD_ROAD, BUILD_CITY, BUY_DEV,
-    OFFER_TRADE, USE_PORT, PLAY_DEV};
+    OFFER_TRADE, USE_PORT, PLAY_DEV, END_TURN};
+enum MoveState {END_TURN, MOVE_UNSUCCESSFUL, MOVE_SUCCESS};
 
 class Player {
     protected:
-        vector<int> resHand;
+        Player(int color, Board b);
+        int resHand[5];
         vector<int> devHand;
         vector<int> settlements;
         int numRoads;
@@ -27,17 +29,25 @@ class Player {
         string name;
         Board board;
     private:
-        // Implemented by subclasses
-        virtual void inputName() = 0;
+        // Setup data implementations
+        virtual string inputName() = 0;
+        virtual int getFirstSett() = 0;
+        virtual int getFirstRoad() = 0;
+        virtual int getSecondSett() = 0;
+        virtual int getSecondRoad() = 0;
 
+        // Move data implementations
         virtual Move getNextMove() = 0;
         virtual int getMoveSettlement() = 0;
         virtual int getMoveRoad() = 0;
         virtual int getMoveCity() = 0;
         virtual int getTradeRate()[2][2] = 0;
         virtual int getMoveDev() = 0;
+        virtual int getRobberMove() = 0;
+        virtual vector<int> robberDiscardCards() = 0;
 
         // Call subclass methods for move data
+        bool moveDoMove();
         bool moveBuildSettlement();
         bool moveBuildRoad();
         bool moveBuildCity();
@@ -45,20 +55,17 @@ class Player {
         bool moveOfferTrade();
         bool moveUsePort();
         bool movePlayDev();
-        void moveEndTurn();
-
-        void robberDiscardCards();
-        void robberMove();
 
         // Player-player interactions
         bool offerTrade(int tradeRate[2][2]);
         int stealResource();
         int stealMonopoly(int res);
+
+
     public:
         // Setup
-        Player(int color, Board b);
-        void placeFirstSettlement();
-        void placeSecondSettlement();
+        void placeFirstPair();
+        void placeSecondPair();
 
         // Turn
         void collectFromRoll(int roll); // Collect resources on die roll
@@ -69,25 +76,6 @@ class Player {
         int getScore(); // Return # of Victory Points
         string getName(); // Return name
         int getColor();
-};
-
-    // // OLD
-    // void addResCard(int e);
-    // bool takeResCard(int e);
-    // void addDevCard(int e);
-    // bool takeDevCard(int e);
-    // void inputRoad();
-    // void placeRoad(int e);
-    // int getColor();
-    // vector<int> &getSettlements();
-    // void inputSettlement(bool isFirstSettlement);
-    // void placeSettlement(int c, bool isFirstSettlement);
-    // void placeCity(int c);
-    // void inputCity();
-    // string getName();
-    // string toString();
-    // int bestCornerDP(Board &board, vector<double> resWeights, double probWeights);
-    // vector<double> calculateWeights(Board &board);
 };
 
 #endif

@@ -1,9 +1,20 @@
 #include "../board/Board.h"
 #include "Player.h"
 
+#include <string> // std::string
 #include <vector> // std::vector
 #include <cmath> // std::abs
 #include <numeric> // std::accumulate, std::inner_product
+
+AIPlayer::AIPlayer(int color, Board b):
+    Player(c, b)
+{}
+
+void AIPlayer::inputName() {
+    string AINames[] = {"@Sherlock", "@AlphaCatan", "@DeepGreen", "@realSlimShady"};
+    return AINames[color];
+}
+
 
 vector<double> AIPlayer::calculateWeights(Board &board) {
 

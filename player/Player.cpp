@@ -1,4 +1,6 @@
 #include <iostream>
+#include <algorithm> // std::shuffle
+#include <random> // std::default_random_engine
 
 #include "Player.h"
 #include "../elements/Elements.h"
@@ -15,122 +17,153 @@ auto ports = board.getPorts();
 
 Player::Player (int color, Board b):
     numRoads(15), numSettlements(5), numCities(4), score(0),
-    this->color(color), board(b)
+    this->color(color), board(b), name("unnamed"),
+    resHand {0, 0, 0, 0, 0}
 {
-    getName();
+    name = inputName();
 }
 
-void Player::getName() {
-    cout << "My color is " << COLOR_STRINGS[color] << ". What is my name? ";
-    cin >> name;
-}
-
-
-// OLD
-/*
-void Player::addResCard(int e) {
-  resHand.push_back(e);
-}
-
-bool Player::takeResCard(int e) {
-  auto loc = find(resHand.begin(), resHand.end(), e);
-  if (loc != resHand.end()) {
-    resHand.erase(loc);
+bool Player::moveBuildSettlement() {
+    int c = getMoveSettlement();
+    if(!board.canPlaceSettlement(c, color, true))
+        return false;
+    board.buildSettlement(c, color);
     return true;
-  }
-  return false;
 }
 
-void Player::addDevCard(int e) {
-  devHand.push_back(e);
-}
-
-bool Player::takeDevCard(int e) {
-  auto loc = find(devHand.begin(), devHand.end(), e);
-  if (loc != devHand.end()) {
-    devHand.erase(loc);
+bool Player::moveBuildRoad() {
+    int edge = getMoveRoad();
+    if(!board.canPlaceRoad(edge, color))
+        return false;
+    board.buildRoad(edge, color);
     return true;
-  }
-  return false;
 }
 
-void Player::placeSettlement(int c, bool isFirstSettlement) {
-  if (!board.canPlaceSettlement(c, color, !isFirstSettlement)) {
-    cout << "You cannot place a settlement here." << endl;
-    return;
-  }
-  board.buildSettlement(c, color);
-  numSettlements--;
-  score++;
+bool Player::moveBuildCity() {
+    int c = getMoveCity();
+    if(!board.canPlaceCity(c, color))
+        return false;
+    board.buildCity(c, color);
+    return true;
 }
 
-void Player::inputSettlement(bool isFirstSettlement) {
-  int t = -1;
-  int compass = -1;
-  do {
-    cout << "Enter the tile number to place a settlement: ";
-    cin >> t;
-    cout << endl << "Enter the corner of the settlement: ";
-    cin >> compass;
-    placeSettlement(tiles[t].getAdjCorners()[compass], isFirstSettlement);
-  }while(corners[tiles[t].getAdjCorners()[compass]].getSettlement() != color);
+bool moveBuyDev() {
+    return false;
 }
 
-void Player::placeCity(int c) {
-  if (corners[c].getSettlement() != color) {
-    cout << "You cannot place a city here." << endl;
-    return;
-  }
-  corners[c].setCity(color);
-  numSettlements++;
-  numCities--;
-  score++;
+bool movePlayDev() {
+    int dev = getMoveDev();
+    return false;
 }
 
-void Player::inputCity() {
-  int t = -1;
-  int c = -1;
-  do {
-    cout << "Enter the tile number to place a city: ";
-    cin >> t;
-    cout << endl << "Enter the corner of the city: ";
-    cin >> c;
-    placeCity(tiles[t].getAdjCorners()[c]);
-  } while(corners[tiles[t].getAdjCorners()[c]].getCity() != color);
+bool moveOfferTrade() {
+    int rate[2][2] = getTradeRate();
+    return false;
 }
 
-void Player::placeRoad(int e) {
-  if (!board.adjOwnProperty(e, color)) {
-    cout << "You cannot place a road here." << endl;
-    return;
-  }
-  edges[e].setRoad(color);
-  numRoads--;
+bool moveUsePort() {
+    int rate[2][2] = getTradeRate();
+    return false;
 }
 
-void Player::inputRoad() {
-  int e = -1;
-  do {
-    cout << "Enter the edge number to place a road: ";
-    cin >> e;
-    placeRoad(e);
-  } while(edges[e].getRoad() != color);
-}
-
-string Player::toString() {
-  return name+"("+color_string+")";
-}
-
-int Player::getScore() {
-  return score;
-}
-
-vector<int> &Player::getSettlements() {
-  return settlements;
-}
-
-int Player::getColor() {
-  return color;
-}
-
+// Player-player interactions
+/**
+ * Offers a trade to this Player
+ * returns whether this player accepts or declines
  */
+bool offerTrade(int tradeRate[2][2]) {
+    return false;
+}
+
+/**
+ * Steal a resource from this Player
+ * returns the resource stolen
+ */
+int stealResource() {
+    vector<int> tempRes;
+    for(int res:resHand){
+        for(int i = 0; i < resHand[res]; i++)
+            tempRes.push_back(res);
+    }
+    random_device rng;
+    mt19937 urng(rng());
+    shuffle(tc.begin(), tc.end(), urng);
+
+    int res = tempRes.back();
+    resHand[res]--;
+    return res;
+}
+
+/**
+ * Steal all of a certain resource from this player
+ * Returns the number of the resource stolen
+ */
+int stealMonopoly(int res) {
+    int count = resHand[res];
+    resHand[res] = 0;
+    return count;
+}
+
+/**
+ * [Setup]
+ * Build first pair of sett/road
+ */
+void placeFirstPair() {
+    int c, r;
+
+    do c = getFirstSett();
+    while(!board.canPlaceSettlement(c, color, false));
+    do r = getFirstRoad();
+    while(!board.canPlaceRoad(r, color));
+
+    board.buildSettlement(c, color);
+    board.buildRoad(r, color);
+}
+
+/**
+ * [Setup]
+ * Build second pair of sett/road
+ */
+void placeSecondPair() {
+    int c, r;
+
+    do c = getSecondSett();
+    while(!board.canPlaceSettlement(c, color, false));
+    do r = getSecondRoad();
+    while(!board.canPlaceRoad(r, color));
+
+    board.buildSettlement(c, color);
+    board.buildRoad(r, color);
+}
+
+// Turn
+
+/*
+ * Collect resources on die roll
+ */
+void collectFromRoll(int roll) {
+    for(int t:board.getMatchingTiles(roll)) {
+        int res = board.getTiles()[t].getResource();
+        // get all corners adjacent to the matching tiles
+        for(int c:board.getTiles()[t].getAdjCorners()) {
+            Corner &corn = board.getCorners()[c];
+            if(corn.getSettlement() == color) {
+                resHand[res]++;
+                if(corn.getCity()) resHand[res]++;
+            }
+        }
+    }
+}
+
+void startTurn() {}
+
+void moveRobber() {
+    int robTile = getRobberMove();
+    board.moveRobber(robTile);
+}
+
+// Misc.
+/* Return # of Victory Points */
+int getScore() { return score; }
+string getName() { return name; }
+int getColor() { return color; }

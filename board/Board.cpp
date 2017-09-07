@@ -35,7 +35,7 @@ void Edge::setIndex(int ind) { index = ind; }
 Corner::Corner():
     settlement(Corner::NO_SETTLEMENT),
     adjPort(0),
-    city(-1)
+    city(false)
 {}
 
 vector<int> (&Corner::getAdjTiles()) { return adjTiles; }
@@ -44,8 +44,8 @@ int Corner::getPort() { return adjPort; }
 void Corner::setPort(int trader) { trader = adjPort; }
 int Corner::getSettlement() { return settlement; }
 void Corner::setSettlement(int color) { settlement = color; }
-int Corner::getCity() { return city; }
-void Corner::setCity(int color) { city = color; }
+bool Corner::getCity() { return city; }
+void Corner::setCity(bool c) { city = c; }
 int Corner::getIndex() { return index; }
 void Corner::setIndex(int ind) { index = ind; }
 
@@ -204,10 +204,19 @@ void Board::initPorts() {
     }
 }
 
+void Board::moveRobber(int tile) {
+    for(Tile &t:tiles) t.setRobber(false);
+    tiles[tile].setRobber(true);
+}
+
 void Board::buildSettlement(int corner, int player) {
     corners[corner].setSettlement(player);
 }
 
 void Board::buildRoad(int edge, int player) {
     edges[edge].setRoad(player);
+}
+
+void Board::buildCity(int corner, int player) {
+    corners[corner].setCity(true);
 }

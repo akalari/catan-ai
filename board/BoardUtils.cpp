@@ -69,6 +69,29 @@ bool Board::canPlaceSettlement(int settlement, int player, bool checkRoad){
 }
 
 /**
+ * Checks if a road can be placed at the specified location
+ * (road is adjacent to a road or settlement owned by the player)
+ */
+bool Board::canPlaceRoad(int road, int player) {
+  for (int c : edges[road].getAdjCorners()) {
+    if (corners[c].getSettlement() == player)
+      return true;
+    for (int e : corners[c].getAdjEdges())
+      if (edges[e].getRoad() == player && e != road)
+        return true;
+  }
+  return false;
+}
+
+/**
+ * Checks if a player can build a city at a specified corner
+ */
+bool Board::canPlaceCity(int settlement, int player) {
+    return (corners[settlement].getSettlement == player &&
+        corner[settlement].getCity() == false);
+}
+
+/**
  * Checks if a settlement (or settlement spot)
  * is >= 2 spots away from other settlements
  */
@@ -91,21 +114,6 @@ bool Board::adjOwnRoad(int settlement, int player) {
   for (int e : corners[settlement].getAdjEdges()) {
     if(edges[e].getRoad() != Edge::NONE && edges[e].getRoad() == player)
       return true;
-  }
-  return false;
-}
-
-/**
- * Checks if a new road is adjacent to a road or settlement occupied
- * by the player
- */
-bool Board::adjOwnProperty(int road, int player) {
-  for (int c : edges[road].getAdjCorners()) {
-    if (corners[c].getSettlement() == player)
-      return true;
-    for (int e : corners[c].getAdjEdges())
-      if (edges[e].getRoad() == player && e != road)
-        return true;
   }
   return false;
 }
