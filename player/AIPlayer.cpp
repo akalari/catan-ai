@@ -7,20 +7,29 @@
 
 using namespace std;
 
-vector<double> AIPlayer::calculateWeights(Board &board) {
+vector<double> AIPlayer::calculateWeights() {
 
   vector<double> probWeights = {0, 0, 0, 0, 0};
   vector<double> numResTiles = {0, 0, 0, 0, 0};
   vector<double> stdWeights = {1, 0.9, 0.4, 0.6, 0.8};
+  vector<double> existingWeights = {1, 1, 1, 1, 1}
+
   // Get the average distance from 7 for each resource
   for (Tile &t : board.getTiles()) {
     probWeights[t.getResource()] += abs(7-t.getNum());
     numResTiles[t.getResource()]++;
   }
+  // Modify the weights given existing resources
+  for (int sett : settlements) {
+    for (int tile : b.getSettlements[sett].getAdjTiles()) {
+      Tile& t = b.getTiles()[tile];
+      existingWeights[t.getResource()] *= (7-t.getNum())/10.0;
+    }
+  }
   // Convert the resource weight to a value lower than 1
   for (int i = 0; i < probWeights.size(); i++) {
     probWeights[i] = (0.2*(probWeights[i]/numResTiles[i]));
-    probWeights[i] *= stdWeights[i];
+    probWeights[i] *= stdWeights[i] * existingWeights[i];
   }
 
   return probWeights;
@@ -75,7 +84,7 @@ int AIPlayer::chooseBestRoad(int corn, bool portWanted) {
     return pathToPort[pathToPort.size()-1];
   }
   else {
-    int targetSettement = bestCornerDP(b, calculateWeights(b), 0.4);
+    int targetSettement = chooseProximateSettlement(DISTANCE, );
     
   }
 
@@ -113,4 +122,8 @@ vector<int> predecessorGetsPath
          (int endPath, int[NUM_CORNERS] preds, vector<int> path) {
 
   return predecessorGetsPath(preds[endPath], preds, path.push_back(endPath));
+}
+
+void Player::placeFirstSettlement() {
+  buildSettlement(bestCornerDP(b, calculateWeights(b), 0.25), color);
 }
