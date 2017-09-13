@@ -5,6 +5,8 @@
 #include <cmath> // std::abs
 #include <numeric> // std::accumulate, std::inner_product
 
+using namespace std;
+
 vector<double> AIPlayer::calculateWeights(Board &board) {
 
   vector<double> probWeights = {0, 0, 0, 0, 0};
@@ -66,12 +68,16 @@ int AIPlayer::bestCornerDP
     return highScore.second;
 }
 
-int AIPlayer::chooseBestRoad(int corn) {
+int AIPlayer::chooseBestRoad(int corn, bool portWanted) {
 
-  vector<int> pathToPort = getPathToPort(resource, corn);
-  if (pathToPort.size() < 4)
+  if (portWanted && pathToPort.size() < 4) {
+    vector<int> pathToPort = getPathToPort(UNDETERMINED, corn);
     return pathToPort[pathToPort.size()-1];
-  else 
+  }
+  else {
+    int targetSettement = bestCornerDP(b, calculateWeights(b), 0.4);
+    
+  }
 
 }
 
@@ -89,6 +95,7 @@ vector<int> AIPlayer::getPathToPort(int resource, int corn) {
     for (int c : search) {
       for (int adjC : b.getCorners()[c].getAdjEdges()) {
         visited[c] = true;
+        // NEEDS ROAD VALIDITY CHECK
         search.erase(remove(search.begin(), search.end(), c), search.end());
         if (adjC.getPort < 0) {
           search.push_back(adjC);
@@ -104,5 +111,6 @@ vector<int> AIPlayer::getPathToPort(int resource, int corn) {
 
 vector<int> predecessorGetsPath
          (int endPath, int[NUM_CORNERS] preds, vector<int> path) {
+
   return predecessorGetsPath(preds[endPath], preds, path.push_back(endPath));
 }
