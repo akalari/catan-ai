@@ -5,22 +5,36 @@
 #include "Player.h"
 #include "../elements/Elements.h"
 #include "../board/Board.h"
-#include "../board/SetupBoard.h"
 
 using namespace std;
 
-Board board = Board();
-auto corners = board.getCorners();
-auto edges = board.getEdges();
-auto tiles = board.getTiles();
-auto ports = board.getPorts();
-
-Player::Player (int color, Board b):
+Player::Player (int color, Board &b, string name):
     numRoads(15), numSettlements(5), numCities(4), score(0),
-    this->color(color), board(b), name("unnamed"),
+    color(color), board(b), name(name),
     resHand {0, 0, 0, 0, 0}
-{
-    name = inputName();
+{}
+
+MoveState Player::moveDoMove() {
+    Move m = getNextMove();
+    bool b = false;
+    switch (m) {
+    case BUILD_SETT: b = moveBuildSettlement();
+        break;
+    case BUILD_ROAD: b = moveBuildRoad();
+        break;
+    case BUILD_CITY: b = moveBuildCity();
+        break;
+    case BUY_DEV: b = moveBuyDev();
+        break;
+    case PLAY_DEV: b = movePlayDev();
+        break;
+    case OFFER_TRADE: b = moveOfferTrade();
+        break;
+    case USE_PORT: b = moveUsePort();
+        break;
+    case END_TURN: return MOVE_ENDTURN;
+    }
+    return b ? MOVE_SUCCESS : MOVE_UNSUCCESSFUL;
 }
 
 bool Player::moveBuildSettlement() {
@@ -47,22 +61,24 @@ bool Player::moveBuildCity() {
     return true;
 }
 
-bool moveBuyDev() {
+bool Player::moveBuyDev() {
     return false;
 }
 
-bool movePlayDev() {
+bool Player::movePlayDev() {
     int dev = getMoveDev();
     return false;
 }
 
-bool moveOfferTrade() {
-    int rate[2][2] = getTradeRate();
+bool Player::moveOfferTrade() {
+    int rate[2][2];
+    getTradeRate(rate);
     return false;
 }
 
-bool moveUsePort() {
-    int rate[2][2] = getTradeRate();
+bool Player::moveUsePort() {
+    int rate[2][2];
+    getTradeRate(rate);
     return false;
 }
 
@@ -71,7 +87,7 @@ bool moveUsePort() {
  * Offers a trade to this Player
  * returns whether this player accepts or declines
  */
-bool offerTrade(int tradeRate[2][2]) {
+bool Player::offerTrade(int tradeRate[2][2]) {
     return false;
 }
 
@@ -79,7 +95,7 @@ bool offerTrade(int tradeRate[2][2]) {
  * Steal a resource from this Player
  * returns the resource stolen
  */
-int stealResource() {
+int Player::stealResource() {
     vector<int> tempRes;
     for(int res:resHand){
         for(int i = 0; i < resHand[res]; i++)
@@ -87,7 +103,7 @@ int stealResource() {
     }
     random_device rng;
     mt19937 urng(rng());
-    shuffle(tc.begin(), tc.end(), urng);
+    shuffle(tempRes.begin(), tempRes.end(), urng);
 
     int res = tempRes.back();
     resHand[res]--;
@@ -98,7 +114,7 @@ int stealResource() {
  * Steal all of a certain resource from this player
  * Returns the number of the resource stolen
  */
-int stealMonopoly(int res) {
+int Player::stealMonopoly(int res) {
     int count = resHand[res];
     resHand[res] = 0;
     return count;
@@ -108,15 +124,15 @@ int stealMonopoly(int res) {
  * [Setup]
  * Build first pair of sett/road
  */
-void placeFirstPair() {
+void Player::placeFirstPair() {
     int c, r;
 
     do c = getFirstSett();
     while(!board.canPlaceSettlement(c, color, false));
+    board.buildSettlement(c, color);
+
     do r = getFirstRoad();
     while(!board.canPlaceRoad(r, color));
-
-    board.buildSettlement(c, color);
     board.buildRoad(r, color);
 }
 
@@ -124,15 +140,15 @@ void placeFirstPair() {
  * [Setup]
  * Build second pair of sett/road
  */
-void placeSecondPair() {
+void Player::placeSecondPair() {
     int c, r;
 
     do c = getSecondSett();
     while(!board.canPlaceSettlement(c, color, false));
+    board.buildSettlement(c, color);
+
     do r = getSecondRoad();
     while(!board.canPlaceRoad(r, color));
-
-    board.buildSettlement(c, color);
     board.buildRoad(r, color);
 }
 
@@ -141,7 +157,7 @@ void placeSecondPair() {
 /*
  * Collect resources on die roll
  */
-void collectFromRoll(int roll) {
+void Player::collectFromRoll(int roll) {
     for(int t:board.getMatchingTiles(roll)) {
         int res = board.getTiles()[t].getResource();
         // get all corners adjacent to the matching tiles
@@ -155,15 +171,22 @@ void collectFromRoll(int roll) {
     }
 }
 
-void startTurn() {}
+void Player::startTurn() {
+    MoveState state = MOVE_SUCCESS;
+    while(state != MOVE_ENDTURN) {
+        state = moveDoMove();
+        if(state == MOVE_UNSUCCESSFUL)
+            cout << "Move Unsuccessful" << endl;
+    }
+}
 
-void moveRobber() {
+void Player::moveRobber() {
     int robTile = getRobberMove();
     board.moveRobber(robTile);
 }
 
 // Misc.
 /* Return # of Victory Points */
-int getScore() { return score; }
-string getName() { return name; }
-int getColor() { return color; }
+int Player::getScore() { return score; }
+string Player::getName() { return name; }
+int Player::getColor() { return color; }
