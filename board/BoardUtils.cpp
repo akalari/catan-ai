@@ -119,41 +119,50 @@ bool Board::adjOwnRoad(int settlement, int player) {
 }
 
 /**
+ * Prints the game board in its current state, without indexes
+ * (see printBoard(bool showIndex) for details)
+ */
+void Board::printBoard() {
+    printBoard(false);
+}
+
+/**
  * Prints the game board in its current state
  * Different segments of each tile are printed, based on its location
  * (see printTile() for more details)
+ * ShowIndex: determines whether each tile's index should be shown
  */
-void Board::printBoard() {
+void Board::printBoard(bool showIndex) {
     cout << endl << printColor(-2) << endl;
     string out[9];
     printStartRow(out, 0);
-    printTile(0, out, 1,1,0,1);
-    printTile(1, out, 0,1,0,1);
-    printTile(2, out, 0,1,0,1);
+    printTile(0, out, 1,1,0,1, showIndex);
+    printTile(1, out, 0,1,0,1, showIndex);
+    printTile(2, out, 0,1,0,1, showIndex);
     printRows(out);
     printStartRow(out, 1);
-    printTile(3, out, 1,1,0,1);
-    printTile(4, out, 0,1,0,1);
-    printTile(5, out, 0,1,0,1);
-    printTile(6, out, 0,1,0,1);
+    printTile(3, out, 1,1,0,1, showIndex);
+    printTile(4, out, 0,1,0,1, showIndex);
+    printTile(5, out, 0,1,0,1, showIndex);
+    printTile(6, out, 0,1,0,1, showIndex);
     printRows(out);
     printStartRow(out, 2);
-    printTile(7, out, 1,1,1,1);
-    printTile(8, out, 0,1,1,1);
-    printTile(9, out, 0,1,1,1);
-    printTile(10, out, 0,1,1,1);
-    printTile(11, out, 0,1,1,1);
+    printTile(7, out, 1,1,1,1, showIndex);
+    printTile(8, out, 0,1,1,1, showIndex);
+    printTile(9, out, 0,1,1,1, showIndex);
+    printTile(10, out, 0,1,1,1, showIndex);
+    printTile(11, out, 0,1,1,1, showIndex);
     printRows(out);
     printStartRow(out, 3);
-    printTile(12, out, 1,0,1,1);
-    printTile(13, out, 0,0,1,1);
-    printTile(14, out, 0,0,1,1);
-    printTile(15, out, 0,0,1,1);
+    printTile(12, out, 1,0,1,1, showIndex);
+    printTile(13, out, 0,0,1,1, showIndex);
+    printTile(14, out, 0,0,1,1, showIndex);
+    printTile(15, out, 0,0,1,1, showIndex);
     printRows(out);
     printStartRow(out, 4);
-    printTile(16, out, 1,0,1,1);
-    printTile(17, out, 0,0,1,1);
-    printTile(18, out, 0,0,1,1);
+    printTile(16, out, 1,0,1,1, showIndex);
+    printTile(17, out, 0,0,1,1, showIndex);
+    printTile(18, out, 0,0,1,1, showIndex);
     printRows(out);
     cout << endl << printColor(-1) << endl;
 }
@@ -220,7 +229,7 @@ string Board::settColor(int tile, int c) {
  *    l r
  *     d
  */
-void Board::printTile(int tile, string (&out)[9], bool l, bool u, bool d, bool r) {
+void Board::printTile(int tile, string (&out)[9], bool l, bool u, bool d, bool r, bool showIndex) {
     string s13(13, ' ');
     string s9(9, ' ');
     string s6(6, ' ');
@@ -230,6 +239,10 @@ void Board::printTile(int tile, string (&out)[9], bool l, bool u, bool d, bool r
     string s2(2, ' ');
     string s(1, ' ');
     string clr = printColor(-2);
+
+    char buff[15];
+    sprintf(buff, "\033[34m%02d", tile);
+    string tile2D = buff;
 
     if(l && u) {
         out[0] += s;
@@ -249,13 +262,19 @@ void Board::printTile(int tile, string (&out)[9], bool l, bool u, bool d, bool r
         out[0] += s4 + roadColor(tile,0) + "_ " +
             settColor(tile,0) + "S" + roadColor(tile,1) + " _" + s4 + clr;
         out[1] += s + roadColor(tile,0) + "_--" + s5 + roadColor(tile,1) + "--_" + s + clr;
-        out[2] += s13;
+        if(showIndex) out[2] += s5 + tile2D + s6;
+        else out[2] += s13;
     }
 
     printTileMiddle(tile, out);
 
     if(d) {
-        out[6] += s + roadColor(tile,4) + "_" + s9 + roadColor(tile,3) + "_" + s + clr;
+        if(showIndex && !u)
+            out[6] += s + roadColor(tile,4) + "_" +
+                clr + s3 + tile2D + s4 +
+                roadColor(tile,3) + "_" + s + clr;
+        else
+            out[6] += s + roadColor(tile,4) + "_" + s9 + roadColor(tile,3) + "_" + s + clr;
         out[7] += s2 + roadColor(tile,4) + "--_" + s3 + roadColor(tile,3) + "_--" + s2 + clr;
         out[8] += s6 + settColor(tile,3) + "S" + s6 + clr;
     }

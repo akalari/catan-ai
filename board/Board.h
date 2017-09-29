@@ -151,7 +151,7 @@ class Board {
         // PrintBoard() Helper Methods
         void printStartRow(string (&out)[9], int row);
         void printRows(string (&out)[9]);
-        void printTile(int tile, string (&out)[9], bool l, bool u, bool d, bool r);
+        void printTile(int tile, string (&out)[9], bool l, bool u, bool d, bool r, bool showIndex);
         string printColor(int player);
         void printTileMiddle(int tile, string(&out)[9]);
         string roadColor(int tile, int r);
@@ -170,6 +170,7 @@ class Board {
         bool adjOwnRoad(int settlement, int player);
 
         void printBoard();
+        void printBoard(bool showIndex);
 
         void buildSettlement(int corner, int player);
         void buildRoad(int edge, int player);
