@@ -87,8 +87,8 @@ bool Board::canPlaceRoad(int road, int player) {
  * Checks if a player can build a city at a specified corner
  */
 bool Board::canPlaceCity(int settlement, int player) {
-    return (corners[settlement].getSettlement == player &&
-        corner[settlement].getCity() == false);
+    return (corners[settlement].getSettlement() == player &&
+        corners[settlement].getCity() == false);
 }
 
 /**
