@@ -9,7 +9,6 @@
 #include "BoardUtils.h"
 #include "SetupBoard.h"
 #include "TestBoard.h"
-#include "../player/Player.h"
 #include "../elements/Elements.h"
 
 using namespace std;
@@ -21,11 +20,7 @@ int main() {
     randomBoards(1, boards);
 
     for(Board &b:boards){
-      Player testPlayer = Player(2, "BLUE");
-      int bestIndex = testPlayer.bestCornerDP
-        (b, testPlayer.calculateWeights(b), 0.25);
-      b.buildSettlement(bestIndex, testPlayer.getColor());
-      b.printBoard();
+      b.printBoard(true);
     }
 
     return 0;
