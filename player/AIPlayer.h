@@ -7,20 +7,28 @@ using namespace std;
 
 class AIPlayer: public Player {
     private:
-        // Implemented from Player
-        string inputName();
-        Move getNextMove();
-        int getMoveSettlement();
-        int getMoveRoad();
-        int getMoveCity();
-        int getTradeRate()[2][2];
-        int getMoveDev();
-        int getRobberMove();
-        vector<int> robberDiscardCards();
+        const string AINames[4] = {"@Sherlock", "@AlphaCatan", "@DeepGreen", "@realSlimShady"};
 
-        vector<double> AIPlayer::calculateWeights(Board &board);
+        // Setup: Implemented from Player
+        int getFirstSett() override;
+        int getFirstRoad() override;
+        int getSecondSett() override;
+        int getSecondRoad() override;
+
+        // Moves: Implemented from Player
+        Move getNextMove() override;
+        int getMoveSettlement() override;
+        int getMoveRoad() override;
+        int getMoveCity() override;
+        void getTradeRate(int (&rate)[2][2]) override;
+        int getMoveDev() override;
+        int getRobberMove() override;
+        vector<int> robberDiscardCards() override;
+
+        vector<double> calculateWeights(Board &board);
+        int bestCornerDP(Board &board, vector<double> resWeights, double probWeights);
     public:
-        AIPlayer(int color, Board b)
+        AIPlayer(int color, Board &b);
 };
 
 #endif

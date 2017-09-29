@@ -1,20 +1,109 @@
 #include "../board/Board.h"
 #include "Player.h"
+#include "AIPlayer.h"
 
 #include <string> // std::string
 #include <vector> // std::vector
 #include <cmath> // std::abs
 #include <numeric> // std::accumulate, std::inner_product
+#include <iterator> // std::begin
 
-AIPlayer::AIPlayer(int color, Board b):
-    Player(c, b)
+using namespace std;
+
+AIPlayer::AIPlayer(int color, Board &b):
+    Player(color, b, AINames[color])
 {}
 
-void AIPlayer::inputName() {
-    string AINames[] = {"@Sherlock", "@AlphaCatan", "@DeepGreen", "@realSlimShady"};
-    return AINames[color];
+/**
+ * Returns the corner index for placing the first settlement`
+ */
+int AIPlayer::getFirstSett() {
+    return 0;
 }
 
+/**
+ *  Returns the edge index for placing the first road
+ */
+int AIPlayer::getFirstRoad() {
+    return 0;
+}
+
+/**
+ * Returns the corner index for placing the second settlement
+ */
+int AIPlayer::getSecondSett() {
+    return 0;
+}
+
+/**
+ * Returns the edge index for placing the second road
+ */
+int AIPlayer::getSecondRoad() {
+    return 0;
+}
+
+/**
+ * Returns the next move type that the player should take
+ */
+Move AIPlayer::getNextMove() {
+    return BUILD_SETT;
+}
+
+/**
+ * Returns the location of the settlement to build
+ */
+int AIPlayer::getMoveSettlement() {
+    return 0;
+}
+
+/**
+ * Returns the location of the road to build
+ */
+int AIPlayer::getMoveRoad() {
+    return 0;
+}
+
+/**
+ * Returns the location of the settlement to upgrade to a city
+ */
+int AIPlayer::getMoveCity() {
+    return 0;
+}
+
+/**
+ * Returns the rate to trade with either the port,
+ * bank, or another player
+ * fills rate with a 2-D array, format:
+ * {{giveRes, giveAmt}, {recvRes, RecvAmt}}
+ */
+void AIPlayer::getTradeRate(int (&rate)[2][2]) {
+    rate[0][0] = 0;
+    rate[0][1] = 0;
+    rate[1][0] = 0;
+    rate[1][1] = 0;
+}
+
+/**
+ * Returns the dev card to play
+ */
+int AIPlayer::getMoveDev() {
+    return 0;
+}
+
+/**
+ * Returns the location (tile) to move the robber
+ */
+int AIPlayer::getRobberMove() {
+    return 0;
+}
+
+/**
+ * Returns half of the deck to discard,
+ * if the player has more than 7 cards
+ */
+vector<int> AIPlayer::robberDiscardCards() {
+    return vector<int>();
+}
 
 vector<double> AIPlayer::calculateWeights(Board &board) {
 
@@ -40,7 +129,7 @@ vector<double> AIPlayer::calculateWeights(Board &board) {
  * probWeights: a score between 0-0.5
  * resourceWeights: order: {Brick, Lumber, Wool, Grain, Ore}
  */
-int Player::bestCornerDP(Board &board, vector<double> resWeights, double probWeights) {
+int AIPlayer::bestCornerDP(Board &board, vector<double> resWeights, double probWeights) {
 
     pair<double, int> highScore;
     // Sum of Squares of Weights
