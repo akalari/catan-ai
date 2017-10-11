@@ -209,13 +209,12 @@ string Board::roadColor(int tile, int r) {
 }
 
 /**
- * Returns the color associated with a settlement,
+ * Returns the colored string associated with a settlement/city,
  * at t[c], in ANSI escape string format
  */
-string Board::settColor(int tile, int c) {
-  return printColor(corners[tiles[tile].getAdjCorners()[c]].getSettlement());
+string Board::settString(int tile, int c) {
+    return printColor(corners[tiles[tile].getAdjCorners()[c]].getSettlement()) + (corners[tiles[tile].getAdjCorners()[c]].getCity()?"C":"S") + "\033[0m\033[35m";
 }
-
 
 /**
  * Prints the desired segments of a tile to each of 9 strings
@@ -247,20 +246,20 @@ void Board::printTile(int tile, string (&out)[9], bool l, bool u, bool d, bool r
     if(l && u) {
         out[0] += s;
         out[1] += s;
-        out[2] += settColor(tile,5) + "S" + clr;
+        out[2] += settString(tile,5);
     } if(l) {
         string cr5 = roadColor(tile,5);
         out[3] += cr5 + "|" + clr;
         out[4] += cr5 + "|" + clr;
         out[5] += cr5 + "|" + clr;
     } if(l && d) {
-        out[6] += settColor(tile,4) + "S" + clr;
+        out[6] += settString(tile,4);
         out[7] += s;
         out[8] += s;
     }
     if(u) {
         out[0] += s4 + roadColor(tile,0) + "_ " +
-            settColor(tile,0) + "S" + roadColor(tile,1) + " _" + s4 + clr;
+            settString(tile,0) + roadColor(tile,1) + " _" + s4 + clr;
         out[1] += s + roadColor(tile,0) + "_--" + s5 + roadColor(tile,1) + "--_" + s + clr;
         if(showIndex) out[2] += s5 + tile2D + s6;
         else out[2] += s13;
@@ -276,20 +275,20 @@ void Board::printTile(int tile, string (&out)[9], bool l, bool u, bool d, bool r
         else
             out[6] += s + roadColor(tile,4) + "_" + s9 + roadColor(tile,3) + "_" + s + clr;
         out[7] += s2 + roadColor(tile,4) + "--_" + s3 + roadColor(tile,3) + "_--" + s2 + clr;
-        out[8] += s6 + settColor(tile,3) + "S" + s6 + clr;
+        out[8] += s6 + settString(tile,3) + s6 + clr;
     }
 
     if(r && u) {
         out[0] += s;
         out[1] += s;
-        out[2] += settColor(tile,1) + "S" + clr;
+        out[2] += settString(tile,1);
     } if(r) {
         string cr2 = roadColor(tile,2);
         out[3] += cr2 + "|" + clr;
         out[4] += cr2 + "|" + clr;
         out[5] += cr2 + "|" + clr;
     } if(r && d) {
-        out[6] += settColor(tile,2) + "S" + clr;
+        out[6] += settString(tile,2);
         out[7] += s;
         out[8] += s;
     }

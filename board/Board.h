@@ -155,7 +155,7 @@ class Board {
         string printColor(int player);
         void printTileMiddle(int tile, string(&out)[9]);
         string roadColor(int tile, int r);
-        string settColor(int tile, int c);
+        string settString(int tile, int c);
     public:
         Board();
         Tile (&getTiles())[NUM_TILES];
