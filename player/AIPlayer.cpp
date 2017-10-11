@@ -10,6 +10,49 @@
 
 using namespace std;
 
+vector<PairedMove> AIPlayer::getPossibleMoves() {
+    vector<PairedMove> moves;
+    for(int c:possibleCities())moves.push_back(PairedMove(BUILD_CITY, c));
+    for(int s:possibleSettlements())moves.push_back(PairedMove(BUILD_SETT, s));
+    for(int r:possibleRoads())moves.push_back(PairedMove(BUILD_ROAD, r));
+    moves.push_back(PairedMove(END_TURN, 0));
+    return moves;
+}
+
+vector<int> AIPlayer::possibleCities() {
+    vector<int> cities;
+    if(resHand[ORE] < 3 || resHand[GRAIN] < 2 || numCities < 1) return cities;
+    for(int c = 0; c < NUM_CORNERS; c++) {
+        if(board.getCorners()[c].getSettlement() == color && !board.getCorners()[c].getCity())
+            cities.push_back(c);
+    }
+    return cities;
+}
+
+vector<int> AIPlayer::possibleSettlements() {
+    vector<int> setts;
+    if(resHand[BRICK] < 1 || resHand[LUMBER] < 1 || resHand[GRAIN] < 1 || resHand[WOOL] < 1 || numSettlements < 1) return setts;
+    for(Edge &e:board.getEdges()) {
+        if(e.getRoad() == color) {
+            for(int c:e.getAdjCorners()) {
+                if(board.canPlaceSettlement(c, color, true)) setts.push_back(c);
+            }
+        }
+    }
+    return setts;
+}
+
+vector<int> AIPlayer::possibleRoads() {
+    vector<int> roads;
+    if(resHand[BRICK] < 1 || resHand[LUMBER] < 1 || numRoads < 1) return roads;
+    for(int e = 0; e < NUM_EDGES; e++) {
+        if(board.getEdges()[e].getRoad() == Edge::NONE) {
+            if(board.canPlaceRoad(e, color)) roads.push_back(e);
+        }
+    }
+    return roads;
+}
+
 AIPlayer::AIPlayer(int color, Board &b):
     Player(color, b, AINames[color])
 {}
