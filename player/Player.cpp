@@ -14,47 +14,45 @@ Player::Player (int color, Board &b, string name):
     resHand {0, 0, 0, 0, 0}
 {}
 
-MoveState Player::moveDoMove() {
-    Move m = getNextMove();
+PairedMove Player::moveDoMove() {
+    PairedMove m = getNextMove();
     bool b = false;
-    switch (m) {
-    case BUILD_SETT: b = moveBuildSettlement();
+    switch (m.move) {
+    case BUILD_SETT: b = moveBuildSettlement(m.parameter);
         break;
-    case BUILD_ROAD: b = moveBuildRoad();
+    case BUILD_ROAD: b = moveBuildRoad(m.parameter);
         break;
-    case BUILD_CITY: b = moveBuildCity();
+    case BUILD_CITY: b = moveBuildCity(m.parameter);
         break;
     case BUY_DEV: b = moveBuyDev();
         break;
-    case PLAY_DEV: b = movePlayDev();
+    case PLAY_DEV: b = movePlayDev(m.parameter);
         break;
-    case OFFER_TRADE: b = moveOfferTrade();
+    case OFFER_TRADE: b = moveOfferTrade(m.parameter);
         break;
-    case USE_PORT: b = moveUsePort();
+    case USE_PORT: b = moveUsePort(m.parameter);
         break;
-    case END_TURN: return MOVE_ENDTURN;
+    case END_TURN: b = true;
     }
-    return b ? MOVE_SUCCESS : MOVE_UNSUCCESSFUL;
+    m.state = b ? MOVE_SUCCESS : MOVE_UNSUCCESSFUL;
+    return m;
 }
 
-bool Player::moveBuildSettlement() {
-    int c = getMoveSettlement();
+bool Player::moveBuildSettlement(int c) {
     if(!board.canPlaceSettlement(c, color, true))
         return false;
     board.buildSettlement(c, color);
     return true;
 }
 
-bool Player::moveBuildRoad() {
-    int edge = getMoveRoad();
+bool Player::moveBuildRoad(int edge) {
     if(!board.canPlaceRoad(edge, color))
         return false;
     board.buildRoad(edge, color);
     return true;
 }
 
-bool Player::moveBuildCity() {
-    int c = getMoveCity();
+bool Player::moveBuildCity(int c) {
     if(!board.canPlaceCity(c, color))
         return false;
     board.buildCity(c, color);
@@ -65,20 +63,15 @@ bool Player::moveBuyDev() {
     return false;
 }
 
-bool Player::movePlayDev() {
-    int dev = getMoveDev();
+bool Player::movePlayDev(int dev) {
     return false;
 }
 
-bool Player::moveOfferTrade() {
-    int rate[2][2];
-    getTradeRate(rate);
+bool Player::moveOfferTrade(int rate) {
     return false;
 }
 
-bool Player::moveUsePort() {
-    int rate[2][2];
-    getTradeRate(rate);
+bool Player::moveUsePort(int rate) {
     return false;
 }
 

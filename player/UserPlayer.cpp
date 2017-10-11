@@ -124,7 +124,7 @@ int UserPlayer::getSecondRoad() {
 /**
  * Returns the next move type that the player should take
  */
-Move UserPlayer::getNextMove() {
+PairedMove UserPlayer::getNextMove() {
     regex valid_move("sett|road|city|buydv|trade|port|pdev|end");
     string input = "";
     while(regex_match(input, valid_move)) {
@@ -144,14 +144,14 @@ Move UserPlayer::getNextMove() {
         }
     }
 
-    if(input == "sett") return BUILD_SETT;
-    if(input == "road") return BUILD_ROAD;
-    if(input == "city") return BUILD_CITY;
-    if(input == "buydv") return BUY_DEV;
-    if(input == "pdev") return PLAY_DEV;
-    if(input == "trade") return OFFER_TRADE;
-    if(input == "port") return USE_PORT;
-    return END_TURN;
+    if(input == "sett") return PairedMove(BUILD_SETT, getMoveSettlement());
+    if(input == "road") return PairedMove(BUILD_ROAD, getMoveRoad());
+    if(input == "city") return PairedMove(BUILD_CITY, getMoveCity());
+    if(input == "buydv") return PairedMove(BUY_DEV, 0);
+    if(input == "pdev") return PairedMove(PLAY_DEV, getMoveDev());
+    if(input == "trade") return PairedMove(OFFER_TRADE, getTradeRate());
+    if(input == "port") return PairedMove(USE_PORT, getTradeRate());
+    return PairedMove(END_TURN, 0);
 }
 
 /**

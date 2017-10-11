@@ -16,14 +16,21 @@ class AIPlayer: public Player {
         int getSecondRoad() override;
 
         // Moves: Implemented from Player
-        Move getNextMove() override;
-        int getMoveSettlement() override;
-        int getMoveRoad() override;
-        int getMoveCity() override;
-        void getTradeRate(int (&rate)[2][2]) override;
-        int getMoveDev() override;
+        PairedMove getNextMove() override;
+
+        int getMoveSettlement();
+        int getMoveRoad();
+        int getMoveCity();
+        int getTradeRate();
+        int getMoveDev();
+
         int getRobberMove() override;
         vector<int> robberDiscardCards() override;
+
+        vector<PairedMove> getPossibleMoves();
+        vector<int> possibleCities();
+        vector<int> possibleSettlements();
+        vector<int> possibleRoads();
 
         vector<double> calculateWeights(Board &board);
         int bestCornerDP(Board &board, vector<double> resWeights, double probWeights);

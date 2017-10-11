@@ -10,9 +10,16 @@ using namespace std;
 #ifndef PLAYER_H
 #define PLAYER_H
 
-enum Move {BUILD_SETT, BUILD_ROAD, BUILD_CITY, BUY_DEV,
-    OFFER_TRADE, USE_PORT, PLAY_DEV, END_TURN};
-enum MoveState {MOVE_ENDTURN, MOVE_UNSUCCESSFUL, MOVE_SUCCESS};
+enum Move {BUILD_SETT, BUILD_ROAD, BUILD_CITY, BUY_DEV, OFFER_TRADE, USE_PORT, PLAY_DEV, END_TURN };
+
+enum MoveState {MOVE_UNSUCCESSFUL, MOVE_SUCCESS};
+
+struct PairedMove {
+    Move move;
+    int parameter;
+    MoveState state;
+    PairedMove(Move m, int p): move(m), parameter(p), state(MOVE_SUCCESS) {}
+};
 
 class Player {
     protected:
@@ -35,24 +42,19 @@ class Player {
         virtual int getSecondRoad() = 0;
 
         // Move data implementations
-        virtual Move getNextMove() = 0;
-        virtual int getMoveSettlement() = 0;
-        virtual int getMoveRoad() = 0;
-        virtual int getMoveCity() = 0;
-        virtual void getTradeRate(int (&rate)[2][2]) = 0;
-        virtual int getMoveDev() = 0;
+        virtual PairedMove getNextMove() = 0;
         virtual int getRobberMove() = 0;
         virtual vector<int> robberDiscardCards() = 0;
 
         // Call subclass methods for move data
-        MoveState moveDoMove();
-        bool moveBuildSettlement();
-        bool moveBuildRoad();
-        bool moveBuildCity();
+        PairedMove moveDoMove();
+        bool moveBuildSettlement(int c);
+        bool moveBuildRoad(int edge);
+        bool moveBuildCity(int c);
         bool moveBuyDev();
-        bool movePlayDev();
-        bool moveOfferTrade();
-        bool moveUsePort();
+        bool movePlayDev(int dev);
+        bool moveOfferTrade(int rate);
+        bool moveUsePort(int rate);
 
         // Player-player interactions
         bool offerTrade(int tradeRate[2][2]);
