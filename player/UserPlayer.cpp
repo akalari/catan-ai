@@ -243,11 +243,8 @@ int UserPlayer::getMoveCity() {
  * @return a reference to a 2-D array, format:
  * {{giveRes, giveAmt}, {recvRes, RecvAmt}}
  */
-void UserPlayer::getTradeRate(int (&rate)[2][2]) {
-    rate[0][0] = 0;
-    rate[0][1] = 0;
-    rate[1][0] = 0;
-    rate[1][1] = 0;
+int UserPlayer::getTradeRate() {
+    return 0;
 }
 
 /**
