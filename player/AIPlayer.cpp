@@ -61,35 +61,36 @@ AIPlayer::AIPlayer(int color, Board &b):
  * Returns the corner index for placing the first settlement`
  */
 int AIPlayer::getFirstSett() {
-    return 0;
+    return rand() % NUM_CORNERS;
 }
 
 /**
  *  Returns the edge index for placing the first road
  */
 int AIPlayer::getFirstRoad() {
-    return 0;
+    return rand() % NUM_EDGES;
 }
 
 /**
  * Returns the corner index for placing the second settlement
  */
 int AIPlayer::getSecondSett() {
-    return 0;
+    return rand() % NUM_CORNERS;
 }
 
 /**
  * Returns the edge index for placing the second road
  */
 int AIPlayer::getSecondRoad() {
-    return 0;
+    return rand() % NUM_EDGES;
 }
 
 /**
  * Returns the next move type that the player should take
  */
-Move AIPlayer::getNextMove() {
-    return BUILD_SETT;
+PairedMove AIPlayer::getNextMove() {
+    vector<PairedMove> possible = getPossibleMoves();
+    return possible.at(rand() % possible.size());
 }
 
 /**
@@ -116,14 +117,9 @@ int AIPlayer::getMoveCity() {
 /**
  * Returns the rate to trade with either the port,
  * bank, or another player
- * fills rate with a 2-D array, format:
- * {{giveRes, giveAmt}, {recvRes, RecvAmt}}
  */
-void AIPlayer::getTradeRate(int (&rate)[2][2]) {
-    rate[0][0] = 0;
-    rate[0][1] = 0;
-    rate[1][0] = 0;
-    rate[1][1] = 0;
+int AIPlayer::getTradeRate() {
+    return 0;
 }
 
 /**
