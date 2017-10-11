@@ -168,15 +168,6 @@ void Player::collectFromRoll(int roll) {
     }
 }
 
-void Player::startTurn() {
-    MoveState state = MOVE_SUCCESS;
-    while(state != MOVE_ENDTURN) {
-        state = moveDoMove();
-        if(state == MOVE_UNSUCCESSFUL)
-            cout << "Move Unsuccessful" << endl;
-    }
-}
-
 void Player::moveRobber() {
     int robTile = getRobberMove();
     board.moveRobber(robTile);

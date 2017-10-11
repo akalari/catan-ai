@@ -69,7 +69,6 @@ class Player {
 
         // Turn
         void collectFromRoll(int roll); // Collect resources on die roll
-        void startTurn();
         void moveRobber();
 
         // Misc.
