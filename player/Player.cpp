@@ -147,8 +147,12 @@ void Player::placeSecondPair() {
     while(!board.canPlaceSettlement(c, color, false));
     board.buildSettlement(c, color);
 
-    do r = getSecondRoad();
-    while(!board.canPlaceRoad(r, color));
+    vector<int> adjEdges = board.getCorners()[c].getAdjEdges();
+
+    do
+        r = getSecondRoad();
+    while(!board.canPlaceRoad(r, color) ||
+        (std::find(adjEdges.begin(), adjEdges.end(), r) == adjEdges.end()));
     board.buildRoad(r, color);
 }
 
