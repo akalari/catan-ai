@@ -10,6 +10,12 @@ UserPlayer::UserPlayer(int color, Board &b):
     Player(color, b, inputName(color))
 {}
 
+vector<PairedMove> UserPlayer::getPossibleMoves() {
+    vector<PairedMove> moves;
+    moves.push_back(PairedMove(END_TURN, 0));
+    return moves;
+}
+
 /**
  * Returns the corner index for placing the first settlement
  */
@@ -125,11 +131,18 @@ int UserPlayer::getSecondRoad() {
  * Returns the next move type that the player should take
  */
 PairedMove UserPlayer::getNextMove() {
+    board.printBoard();
+    cout << "\n\nHAND:\tBRICK\tLUMBER\tWOOL\tGRAIN\tORE\n";
+    for(int i:getResHand())
+        cout << "\t"<< i;
+    cout << endl;
+
     regex valid_move("sett|road|city|buydv|trade|port|pdev|end");
     string input = "";
-    while(regex_match(input, valid_move)) {
-        cout << name << ", what's your next move? ['help'|moveType] -> " << endl;
-        if(name == "help") {
+    while(!regex_match(input, valid_move)) {
+        cout << name << ", what's your next move? ['help'|moveType] -> ";
+        cin >> input;
+        if(input == "help") {
             cout << "----- Move Input Help -----" << endl;
             cout << "sett  > build a settlement" << endl;
             cout << "road  > build a road" << endl;

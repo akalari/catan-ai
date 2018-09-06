@@ -1,4 +1,6 @@
 #include <iostream>
+#include <fstream>
+#include <sstream>
 #include <algorithm> // std::shuffle
 #include <random> // std::default_random_engine
 
@@ -16,6 +18,10 @@ Player::Player (int color, Board &b, string name):
 
 PairedMove Player::moveDoMove() {
     PairedMove m = getNextMove();
+    return moveDoMove(m);
+}
+
+PairedMove Player::moveDoMove(PairedMove m) {
     bool b = false;
     switch (m.move) {
     case BUILD_SETT: b = moveBuildSettlement(m.parameter);
@@ -39,22 +45,37 @@ PairedMove Player::moveDoMove() {
 }
 
 bool Player::moveBuildSettlement(int c) {
-    if(!board.canPlaceSettlement(c, color, true))
+    if(!board.canPlaceSettlement(c, color, true) ||
+        resHand[BRICK] < 1 || resHand[LUMBER] < 1 || resHand[GRAIN] < 1 || resHand[WOOL] < 1 || numSettlements < 1)
         return false;
+    resHand[BRICK]--;
+    resHand[LUMBER]--;
+    resHand[GRAIN]--;
+    resHand[WOOL]--;
+    numSettlements--;
     board.buildSettlement(c, color);
     return true;
 }
 
 bool Player::moveBuildRoad(int edge) {
-    if(!board.canPlaceRoad(edge, color))
+    if(!board.canPlaceRoad(edge, color) ||
+        resHand[BRICK] < 1 || resHand[LUMBER] < 1 || numRoads < 1)
         return false;
+    resHand[BRICK]--;
+    resHand[LUMBER]--;
+    numRoads--;
     board.buildRoad(edge, color);
     return true;
 }
 
 bool Player::moveBuildCity(int c) {
-    if(!board.canPlaceCity(c, color))
+    if(!board.canPlaceCity(c, color) ||
+        resHand[ORE] < 3 || resHand[GRAIN] < 2 || numCities < 1)
         return false;
+    resHand[ORE] -= 3;
+    resHand[GRAIN] -= 2;
+    numCities--;
+    numSettlements++;
     board.buildCity(c, color);
     return true;
 }
@@ -146,6 +167,7 @@ void Player::placeSecondPair() {
         r = getSecondRoad();
     while(!board.canPlaceRoad(r, color) ||
         (std::find(adjEdges.begin(), adjEdges.end(), r) == adjEdges.end()));
+
     board.buildRoad(r, color);
 }
 
@@ -178,3 +200,29 @@ void Player::moveRobber() {
 int Player::getScore() { return score; }
 string Player::getName() { return name; }
 int Player::getColor() { return color; }
+int (&Player::getResHand())[5] { return resHand; }
+
+/**
+ * Writes a vector of boards to a CSV file at the specified filename
+ */
+void Player::writePlayer(string filename) {
+    ofstream outfile;
+    outfile.open(filename, ofstream::out | ofstream::app); // open to append
+
+    outfile << color << ":";
+    outfile << resHand[0];
+    for(int i = 1; i < 5; i++)outfile << "," << resHand[i];
+    outfile << endl;
+
+    outfile.close();
+}
+
+/**
+ * Writes a vector of boards to a CSV file at the specified filename
+ */
+void Player::writePlayer(ofstream &outfile) {
+    outfile << color << ":";
+    outfile << resHand[0];
+    for(int i = 1; i < 5; i++)outfile << "," << resHand[i];
+    outfile << endl;
+}

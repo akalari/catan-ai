@@ -377,6 +377,42 @@ void randomBoards(int n, vector<Board> &boards) {
     }
 }
 
+string writeBoard(Board &b) {
+    int boardInts[5*19] = {0}; // Sparse board array
+    ostringstream os;
+
+    for(int t = 0; t < NUM_TILES; t++) {
+        int r = b.getTiles()[t].getResource();
+        int n = b.getTiles()[t].getNum();
+        if(r > -1)
+            boardInts[t*5 + r] = n;
+    }
+
+    int cities[NUM_CORNERS] = {0};
+    int setts[NUM_CORNERS] = {-1};
+    int roads[NUM_EDGES] = {-1};
+
+    for(int c = 0; c < NUM_CORNERS; c++) {
+        setts[c] = b.getCorners()[c].getSettlement();
+        if(b.getCorners()[c].getCity())cities[c] = 1;
+    }
+
+    for(int e = 0; e < NUM_EDGES; e++) {
+        roads[e] = b.getEdges()[e].getRoad();
+    }
+
+    os << boardInts[0];
+    for(int i = 1; i < 5*19; i++)
+        os << "," << boardInts[i];
+
+    for(int i:cities) os << "," << i;
+    for(int s:setts)os << "," << s;
+    for(int r:roads)os << "," << r;
+    os << endl;
+
+    return os.str();
+}
+
 /**
  * Writes a vector of boards to a CSV file at the specified filename
  */
@@ -384,50 +420,52 @@ void writeBoards(string filename, vector<Board> &boards) {
     ofstream outfile(filename);
 
     for(Board &b:boards) {
-        int boardInts[5*19] = {0}; // Sparse board array
-
-        for(int t = 0; t < NUM_TILES; t++) {
-            int r = b.getTiles()[t].getResource();
-            int n = b.getTiles()[t].getNum();
-            if(r > -1)
-                boardInts[t*5 + r] = n;
-        }
-
-        outfile << boardInts[0];
-        for(int i = 1; i < 5*19; i++)
-            outfile << "," << boardInts[i];
-        outfile << endl;
+        outfile << writeBoard(b);
     }
 
     outfile.close();
 }
 
-/**
- * Loads a vector of boards with data from a CSV file
- * at the specified filename
- */
-void loadBoards(string filename, vector<Board> &boards) {
-    boards.clear();
-    ifstream infile(filename);
+void readBoard(string text, Board &b) {
+    istringstream is;
+    replace(text.begin(), text.end(), ',', ' ');
+    is.str(text);
 
-    string line;
-    while(getline(infile, line)) {
-        Board b = Board();
-
-        replace(line.begin(), line.end(), ',', ' ');
-        stringstream istr(line);
-        //line: 0b,0l,0w,0g,0h,1b,1l...
-        int n, i = 0;
-        while(istr >> n) {
+    int n, i = 0;
+    while(is >> n) {
+        if(i < 95) {
             int tile = i/5; //0 -> 18
             int res = i%5; //0 -> 4
             if(n != 0) {
                 b.getTiles()[tile].setResource(res);
                 b.getTiles()[tile].setNum(n);
             }
-            i++;
+        } else if (i < 149) {
+            if(n > 0) b.getCorners()[i - 95].setCity(true);
+        } else if (i < 203) {
+            b.getCorners()[i - 149].setSettlement(n);
+        } else if (i < 275) {
+            b.getEdges()[i - 203].setRoad(n);
+        } else {
+            cout << "something wrong, went past 275" << endl;
         }
+        i++;
+    }
 
+}
+
+/**
+ * Loads a vector of boards with data from a CSV file
+ * at the specified filename
+ */
+void readBoards(string filename, vector<Board> &boards) {
+    boards.clear();
+    ifstream infile(filename);
+
+    string line;
+    while(getline(infile, line)) {
+        Board b = Board();
+        readBoard(line, b);
         boards.push_back(b); // Pushes a copy, but that's ok
     }
     infile.close();

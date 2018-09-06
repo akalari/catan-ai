@@ -1,14 +1,16 @@
 #ifndef AIPLAYER_H
 #define AIPLAYER_H
 
+#include <string>
 #include "Player.h"
 
 using namespace std;
 
 class AIPlayer: public Player {
     private:
-        const string AINames[4] = {"@Sherlock", "@AlphaCatan", "@DeepGreen", "@realSlimShady"};
-
+        // AI_NAMES{"@Sherlock", "@AlphaCatan", "@DeepGreen", "@realSlimShady"},
+        static const string AI_NAMES[4];
+        string getName(int color);
         // Setup: Implemented from Player
         int getFirstSett() override;
         int getFirstRoad() override;
@@ -27,7 +29,6 @@ class AIPlayer: public Player {
         int getRobberMove() override;
         vector<int> robberDiscardCards() override;
 
-        vector<PairedMove> getPossibleMoves();
         vector<int> possibleCities();
         vector<int> possibleSettlements();
         vector<int> possibleRoads();
@@ -36,6 +37,7 @@ class AIPlayer: public Player {
         int bestCornerDP(Board &board, vector<double> resWeights, double probWeights);
     public:
         AIPlayer(int color, Board &b);
+        vector<PairedMove> getPossibleMoves() override;
 };
 
 #endif

@@ -15,13 +15,25 @@ using namespace std;
 
 int main() {
     cout << "Testing Board" << endl;
+
+    int numBoards;
+    cout << "How many boards? ";
+    cin >> numBoards;
+
     vector <Board> boards;
 
-    randomBoards(1, boards);
+    randomBoards(numBoards, boards);
 
     for(Board &b:boards){
       b.printBoard(true);
     }
+
+    string filename;
+    cout << "What filename? ";
+    cin >> filename;
+    cout << "Printing to file: " << filename << endl;
+
+    writeBoards(filename, boards);
 
     return 0;
 }

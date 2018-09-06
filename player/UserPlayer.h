@@ -9,6 +9,7 @@ using namespace std;
 class UserPlayer: public Player {
     public:
         UserPlayer(int color, Board &b);
+        vector<PairedMove> getPossibleMoves() override;
     private:
         // Setup: Implemented from Player
         int getFirstSett() override;

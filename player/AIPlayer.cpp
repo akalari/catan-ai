@@ -10,6 +10,12 @@
 
 using namespace std;
 
+const string AIPlayer::AI_NAMES[] = {"@Sherlock", "@AlphaCatan", "@DeepGreen", "@realSlimShady"};
+
+AIPlayer::AIPlayer(int color, Board &b):
+    Player(color, b, AI_NAMES[color])
+{}
+
 vector<PairedMove> AIPlayer::getPossibleMoves() {
     vector<PairedMove> moves;
     for(int c:possibleCities())moves.push_back(PairedMove(BUILD_CITY, c));
@@ -53,15 +59,11 @@ vector<int> AIPlayer::possibleRoads() {
     return roads;
 }
 
-AIPlayer::AIPlayer(int color, Board &b):
-    Player(color, b, AINames[color])
-{}
-
 /**
  * Returns the corner index for placing the first settlement`
  */
 int AIPlayer::getFirstSett() {
-    return rand() % NUM_CORNERS;
+    return bestCornerDP(board, calculateWeights(board), 0.25);
 }
 
 /**
@@ -75,7 +77,7 @@ int AIPlayer::getFirstRoad() {
  * Returns the corner index for placing the second settlement
  */
 int AIPlayer::getSecondSett() {
-    return rand() % NUM_CORNERS;
+    return bestCornerDP(board, calculateWeights(board), 0.25);
 }
 
 /**
@@ -146,18 +148,18 @@ vector<int> AIPlayer::robberDiscardCards() {
 
 vector<double> AIPlayer::calculateWeights(Board &board) {
 
-  vector<double> probWeights = {0, 0, 0, 0, 0};
-  vector<double> numResTiles = {0, 0, 0, 0, 0};
+  vector<double> probWeights = {0.0, 0.0, 0.0, 0.0, 0.0};
+  vector<double> numResTiles = {0.0, 0.0, 0.0, 0.0, 0.0};
   vector<double> stdWeights = {1, 0.9, 0.4, 0.6, 0.8};
   // Get the average distance from 7 for each resource
   for (Tile &t : board.getTiles()) {
+    if(t.getResource() < 0)continue;
     probWeights[t.getResource()] += abs(7-t.getNum());
     numResTiles[t.getResource()]++;
   }
   // Convert the resource weight to a value lower than 1
   for (int i = 0; i < probWeights.size(); i++) {
-    probWeights[i] = (0.2*(probWeights[i]/numResTiles[i]));
-    probWeights[i] *= stdWeights[i];
+    probWeights[i] = stdWeights[i] * (0.2*(probWeights[i]/numResTiles[i]));
   }
 
   return probWeights;

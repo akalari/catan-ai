@@ -1,3 +1,6 @@
+#ifndef PLAYER_H
+#define PLAYER_H
+
 #include <cstddef>
 #include <iostream>
 #include <cstdio>
@@ -7,10 +10,7 @@
 
 using namespace std;
 
-#ifndef PLAYER_H
-#define PLAYER_H
-
-enum Move {BUILD_SETT, BUILD_ROAD, BUILD_CITY, BUY_DEV, OFFER_TRADE, USE_PORT, PLAY_DEV, END_TURN };
+enum Move {BUILD_SETT, BUILD_ROAD, BUILD_CITY, END_TURN, BUY_DEV, OFFER_TRADE, USE_PORT, PLAY_DEV};
 
 enum MoveState {MOVE_UNSUCCESSFUL, MOVE_SUCCESS};
 
@@ -47,7 +47,6 @@ class Player {
         virtual vector<int> robberDiscardCards() = 0;
 
         // Call subclass methods for move data
-        PairedMove moveDoMove();
         bool moveBuildSettlement(int c);
         bool moveBuildRoad(int edge);
         bool moveBuildCity(int c);
@@ -67,14 +66,23 @@ class Player {
         void placeFirstPair();
         void placeSecondPair();
 
+        virtual vector<PairedMove> getPossibleMoves() = 0;
+
         // Turn
         void collectFromRoll(int roll); // Collect resources on die roll
         void moveRobber();
+        PairedMove moveDoMove();
+        PairedMove moveDoMove(PairedMove m);
 
         // Misc.
         int getScore(); // Return # of Victory Points
         string getName(); // Return name
         int getColor();
+        int (&getResHand())[5];
+
+        // Utility
+        void writePlayer(string filename);
+        void writePlayer(ofstream &outfile);
 };
 
 #endif
